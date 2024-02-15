@@ -1,0 +1,5 @@
+{
+    print("You use the old key in the door. It turns easily with a click and the door swings open.")
+    print("You are free to leave the castle")
+    print("Congratulations! You have escaped the castle!")
+}

@@ -1,0 +1,9 @@
+{
+    print("The frog dies with a squelch")
+    print("You see a small key gleaming from what remains of the frog's stomach")
+
+    choice("Take the key", {
+        set("has-oak-door-key", 1)
+        goto("shabby-door.jabl")
+    })
+}

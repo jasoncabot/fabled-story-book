@@ -1,0 +1,23 @@
+{
+    print("You are standing in what looks like an old guards room.")
+
+    if (get("has-oak-door-key") == 1) {
+        print("The mangled remains of a frog are lying on the floor.")
+
+        choice("")
+    } else {
+        print("An enormous frog is staring at you from the other side of the room.")
+
+        choice("Attack the frog", {
+            fight("frog-1", {
+                goto("guard-room/success.jabl")
+            }, {
+                goto("guard-room/failure.jabl")
+            })
+        })
+    }
+
+    choice("Leave", {
+        goto("")
+    })
+}

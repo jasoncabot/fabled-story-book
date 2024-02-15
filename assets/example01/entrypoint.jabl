@@ -1,0 +1,20 @@
+{
+    print("You wake with a groggy feeling in your head, unable to recall how you got here")
+    print("Last night was a blur, you remember entering the tavern and having a few drinks but then everything goes blank")
+    print("You look around the room and spot a skeleton chained to the wall to your right")
+    print("You feel a flourish of terror settle at the pit of your stomach")
+    print("You must escape ...")
+
+    choice("Look at skeleton", {
+        if (get("examined-skeleton") == -100.6) {
+            print("You have already examined this skeleton")
+        } else {
+            set("examined-skeleton", -100.6)
+            goto("entrypoint.jabl")
+            print("You find nothing of value")
+        }
+    })
+    choice("Go upstairs", {
+        goto("upstairs.jabl")
+    })
+}

@@ -1,0 +1,16 @@
+{
+    print("You are standing a grand dining room. A long table made up with a tasty looking feast stands in the centre of the room")
+    print("The food is still steaming hot and looks delicious. You are feeling very hungry")
+    print("On the left of the hall is a shabby looking door")
+    print("The right opens into a grand entrance hallway")
+
+    choice("Eat the food", {
+        print("You eat the food")
+    })
+    choice("Exit through shabby door", {
+        goto("shabby-door.jabl")
+    })
+    choice("Investigate hallway", {
+        goto("hallway.jabl")
+    })
+}
