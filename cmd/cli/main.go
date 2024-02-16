@@ -14,14 +14,14 @@ import (
 func main() {
 
 	// load a particular character
-	mapper := cli.NewStateMapper()
 	loader := cli.NewFileLoader(filepath.Join("assets", "example01"))
 
-	interpreter := jabl.NewInterpreter(mapper, loader)
+	interpreter := jabl.NewInterpreter(loader)
 
 	term := termenv.EnvColorProfile()
 
-	session := cli.NewJABLProgram(interpreter, "entrypoint.jabl", term)
+	state := cli.NewStateMapper()
+	session := cli.NewJABLProgram(interpreter, state, "entrypoint.jabl", term)
 
 	app := tea.NewProgram(session)
 	if _, err := app.Run(); err != nil {

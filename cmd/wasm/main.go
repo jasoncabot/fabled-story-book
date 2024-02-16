@@ -12,17 +12,18 @@ import (
 )
 
 var interpreter *jabl.Interpreter
+var state jabl.State
 
 func main() {
 	// Keep this 'program' running and ready to receive function calls from Javascript
 	c := make(chan struct{}, 0)
 
-	mapper := &jsState{}
+	state = &localStorageMapper{}
 	loader := &jsLoader{fn: "loadSection"}
 
 	// Create an instance of the interpreter we will use to execute the code
 	// There is nothing shared between executions of the interpreter, so we can use a single instance
-	interpreter = jabl.NewInterpreter(mapper, loader)
+	interpreter = jabl.NewInterpreter(loader)
 
 	registerCallbacks()
 
@@ -55,7 +56,7 @@ func execSection(this js.Value, inputs []js.Value) any {
 	callback := inputs[1]
 
 	// The interpreter delegates back to the loader for getting the code to execute from an identifier
-	interpreter.Execute(section, func(section *jabl.Result, err error) {
+	interpreter.Execute(section, state, func(section *jabl.Result, err error) {
 		if err != nil {
 			callback.Invoke(js.Null(), err.Error())
 		} else {
@@ -76,9 +77,9 @@ func registerCallbacks() {
 }
 
 // A state mapper that delegates back to Javascript for getting and setting state
-type jsState struct{}
+type localStorageMapper struct{}
 
-func (s *jsState) Get(key string) (float64, error) {
+func (s *localStorageMapper) Get(key string) (float64, error) {
 	value := js.Global().Get("localStorage").Call("getItem", key)
 	if value.IsNull() {
 		return 0, nil
@@ -86,7 +87,7 @@ func (s *jsState) Get(key string) (float64, error) {
 	return strconv.ParseFloat(value.String(), 64)
 }
 
-func (s *jsState) Set(key string, value float64) error {
+func (s *localStorageMapper) Set(key string, value float64) error {
 	js.Global().Get("localStorage").Call("setItem", key, value)
 	return nil
 }

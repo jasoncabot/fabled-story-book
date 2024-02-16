@@ -1,3 +1,4 @@
 {
-    "go.buildTags": "wasm js"
+    "go.buildTags": "wasm js",
+    "go.testTags": ""
 }

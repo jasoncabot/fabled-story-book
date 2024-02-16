@@ -32,7 +32,8 @@ license that can be found in the LICENSE file.
         const shouldFetch = urlParams.get("debug") === "true" ? false : true;
 
         if (shouldFetch) {
-          fetch(identifier)
+          const base = document.getElementById("base").value;
+          fetch(base + identifier)
             .then((response) => response.text())
             .then((text) => {
               callback(text, null);
@@ -76,21 +77,34 @@ license that can be found in the LICENSE file.
         });
       };
 
+      function render(result, err) {
+        if (err) {
+          console.error(err);
+          document.getElementById("output").value = err;
+          return;
+        }
+
+        const output = JSON.stringify(result, null, 2);
+        document.getElementById("output").value = output;
+      }
+
       async function run() {
         console.clear();
 
         let output = "";
         try {
-          const result = await exec("web-sample-01/entrypoint.jabl");
-          output = JSON.stringify(result, null, 2);
+          const result = await exec("entrypoint.jabl");
+          render(result, null);
         } catch (e) {
-          output = e;
+          render(null, e);
         }
-        document.getElementById("output").value = output;
       }
     </script>
 
     <h1>JABL</h1>
+
+    <h2>Base URL</h2>
+    <input id="base" type="text" value="https://raw.githubusercontent.com/jasoncabot/fabled-story-book/main/assets/example01/" placeholder="https://example.com/book1/" />
 
     <h2>Input</h2>
     <textarea id="codeArea" rows="10" cols="80"></textarea>

@@ -12,13 +12,13 @@ type executeMsg struct {
 	err    error
 }
 
-func execSection(interpreter *jabl.Interpreter, id jabl.SectionId) func() tea.Msg {
+func execSection(interpreter *jabl.Interpreter, state jabl.State, id jabl.SectionId) func() tea.Msg {
 	return func() tea.Msg {
 		var msg tea.Msg
 
 		wg := sync.WaitGroup{}
 		wg.Add(1)
-		interpreter.Execute(id, func(res *jabl.Result, err error) {
+		interpreter.Execute(id, state, func(res *jabl.Result, err error) {
 			msg = executeMsg{
 				result: res,
 				err:    err,
@@ -32,13 +32,13 @@ func execSection(interpreter *jabl.Interpreter, id jabl.SectionId) func() tea.Ms
 	}
 }
 
-func execChoice(interpreter *jabl.Interpreter, choice *jabl.Choice) func() tea.Msg {
+func execChoice(interpreter *jabl.Interpreter, state jabl.State, choice *jabl.Choice) func() tea.Msg {
 	return func() tea.Msg {
 		var msg executeMsg
 
 		wg := sync.WaitGroup{}
 		wg.Add(1)
-		interpreter.Evaluate(choice.Code, func(res *jabl.Result, err error) {
+		interpreter.Evaluate(choice.Code, state, func(res *jabl.Result, err error) {
 			msg = executeMsg{
 				result: res,
 				err:    err,

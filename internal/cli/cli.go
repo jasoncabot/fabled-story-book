@@ -10,6 +10,7 @@ import (
 
 type jablProgram struct {
 	interpreter      *jabl.Interpreter
+	state            jabl.State
 	currentSection   jabl.SectionId
 	currentSelection int
 	profile          termenv.Profile
@@ -19,9 +20,10 @@ type jablProgram struct {
 	err              error
 }
 
-func NewJABLProgram(i *jabl.Interpreter, entrypoint string, profile termenv.Profile) *jablProgram {
+func NewJABLProgram(i *jabl.Interpreter, state jabl.State, entrypoint string, profile termenv.Profile) *jablProgram {
 	return &jablProgram{
 		interpreter:      i,
+		state:            state,
 		currentSection:   jabl.SectionId(entrypoint),
 		currentSelection: 0,
 		profile:          profile,
@@ -33,7 +35,7 @@ func NewJABLProgram(i *jabl.Interpreter, entrypoint string, profile termenv.Prof
 
 func (p *jablProgram) Init() tea.Cmd {
 	// When starting we want to execute the current section
-	return execSection(p.interpreter, p.currentSection)
+	return execSection(p.interpreter, p.state, p.currentSection)
 }
 
 func (p *jablProgram) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -56,7 +58,7 @@ func (p *jablProgram) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// Find the section id for the selected choice
 			if p.currentSelection < len(p.choices) {
 				choice := p.choices[p.currentSelection]
-				return p, execChoice(p.interpreter, choice)
+				return p, execChoice(p.interpreter, p.state, choice)
 			}
 			return p, nil
 		}
