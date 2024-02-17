@@ -13,11 +13,11 @@ Expression expr
 %token START END IF ELSE GET SET PRINT CHOICE GOTO
 %token CMP_LT CMP_GT CMP_LTE CMP_GTE CMP_EQ CMP_NEQ CMP_AND CMP_OR CMP_NOT
 %token<String> STRING
-%token<Number> NUMBER
+%token<Number> NUMBER DICE
 %token<Boolean> BOOLEAN
 
 %type <Statement> stmt block stmt_list
-%type <Expression> strExpr boolExpr numExpr
+%type <Expression> strExpr boolExpr numExpr rollExpr
 
 %left '+' '-'
 %left '*' '/'
@@ -73,6 +73,7 @@ boolExpr:
 
 numExpr:
         NUMBER                                { $$ = $1 }
+        | rollExpr                            { $$ = $1 }
         | '(' numExpr ')'                     { $$ = &parenExpr{expr: $2} }
         | numExpr '+' numExpr                 { $$ = &mathExpr{op: '+', left: $1, right: $3} }
         | numExpr '-' numExpr                 { $$ = &mathExpr{op: '-', left: $1, right: $3} }
@@ -80,6 +81,11 @@ numExpr:
         | numExpr '/' numExpr                 { $$ = &mathExpr{op: '/', left: $1, right: $3} }
         | SET '(' strExpr ',' numExpr ')'     { $$ = &fnStmt{fn: SET, expr: $3, expr2: $5} }
         | GET '(' strExpr ')'                 { $$ = &fnStmt{fn: GET, expr: $3} }
+      ;
+
+rollExpr:
+        DICE                { $$ = &rollExpr{num: 1, sides: $1} }
+      | NUMBER DICE         { $$ = &rollExpr{num: $1, sides: $2} }
       ;
 
 %%

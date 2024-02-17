@@ -37,7 +37,8 @@ const CMP_OR = 57362
 const CMP_NOT = 57363
 const STRING = 57364
 const NUMBER = 57365
-const BOOLEAN = 57366
+const DICE = 57366
+const BOOLEAN = 57367
 
 var yyToknames = [...]string{
 	"$end",
@@ -63,6 +64,7 @@ var yyToknames = [...]string{
 	"CMP_NOT",
 	"STRING",
 	"NUMBER",
+	"DICE",
 	"BOOLEAN",
 	"'+'",
 	"'-'",
@@ -79,7 +81,7 @@ const yyEofCode = 1
 const yyErrCode = 2
 const yyInitialStackSize = 16
 
-//line jabl.y:85
+//line jabl.y:91
 
 //line yacctab:1
 var yyExca = [...]int8{
@@ -93,78 +95,78 @@ const yyPrivate = 57344
 const yyLast = 143
 
 var yyAct = [...]int8{
-	27, 2, 23, 89, 31, 30, 28, 52, 53, 54,
-	55, 60, 94, 52, 53, 54, 55, 36, 69, 29,
-	18, 21, 22, 90, 32, 71, 44, 34, 43, 45,
-	86, 61, 42, 40, 41, 38, 39, 35, 62, 63,
-	33, 64, 65, 66, 67, 87, 68, 70, 72, 73,
-	74, 75, 76, 77, 78, 79, 80, 52, 53, 54,
-	55, 85, 91, 81, 82, 83, 84, 52, 53, 54,
-	55, 3, 88, 46, 47, 48, 49, 50, 51, 46,
-	47, 48, 49, 50, 51, 52, 53, 54, 55, 92,
-	93, 52, 53, 54, 55, 1, 69, 31, 30, 19,
-	59, 40, 41, 38, 39, 58, 20, 56, 57, 17,
-	26, 19, 29, 24, 37, 54, 55, 4, 25, 0,
-	61, 16, 15, 14, 13, 56, 57, 11, 9, 0,
-	0, 10, 6, 8, 7, 9, 0, 5, 10, 6,
-	8, 7, 12,
+	27, 2, 92, 28, 23, 54, 55, 56, 57, 63,
+	97, 54, 55, 56, 57, 38, 72, 18, 21, 22,
+	93, 34, 32, 31, 36, 89, 46, 64, 37, 44,
+	45, 47, 35, 62, 19, 26, 19, 29, 33, 24,
+	65, 66, 20, 61, 25, 67, 68, 69, 70, 73,
+	75, 76, 77, 78, 79, 80, 81, 82, 83, 58,
+	59, 17, 84, 85, 88, 86, 87, 48, 49, 50,
+	51, 52, 53, 64, 16, 91, 54, 55, 56, 57,
+	54, 55, 56, 57, 60, 72, 48, 49, 50, 51,
+	52, 53, 95, 96, 15, 42, 43, 40, 41, 54,
+	55, 56, 57, 54, 55, 56, 57, 90, 94, 71,
+	42, 43, 40, 41, 32, 31, 56, 57, 5, 14,
+	13, 58, 59, 12, 39, 3, 1, 11, 9, 29,
+	33, 10, 6, 8, 7, 9, 74, 30, 10, 6,
+	8, 7, 4,
 }
 
 var yyPact = [...]int16{
-	67, -1000, -1000, 129, 122, -1000, 95, 94, 93, 92,
-	80, -1000, -1000, 77, 77, 77, 89, 77, 10, -1000,
-	77, 7, -14, 84, -1000, 89, 89, 60, 108, -1000,
-	76, 71, -20, -1000, 1, -1000, 67, 67, 89, 89,
-	89, 89, 90, 16, 66, -1000, -4, -4, -4, -4,
-	-4, -4, -4, -4, -4, -4, 77, 77, 77, 77,
-	-4, -1000, 0, 38, -1000, -1000, -1000, -1000, -1000, -1000,
-	42, -4, 42, 42, 42, 42, 42, 88, 88, -1000,
-	-1000, -1000, -1000, -28, -7, 32, -1000, 67, -12, -4,
-	-1000, -1000, -1000, -18, -1000,
+	121, -1000, -1000, 129, 122, -1000, 90, 89, 64, 44,
+	31, -1000, -1000, 12, 12, 12, 14, 12, 1, -1000,
+	12, -3, -17, 93, -1000, 14, 14, 73, 104, 60,
+	-1000, 13, 3, -1000, -23, -1000, -4, -1000, 121, 121,
+	14, 14, 14, 14, 42, 78, 54, -1000, 106, 106,
+	106, 106, 106, 106, 106, 106, 106, 106, 12, 12,
+	-1000, 12, 12, 106, -1000, -6, 100, -1000, -1000, -1000,
+	-1000, -1000, -1000, 50, 106, 50, 50, 50, 50, 50,
+	88, 88, -1000, -1000, -1000, -1000, -30, -11, 77, -1000,
+	121, -15, 106, -1000, -1000, -1000, -21, -1000,
 }
 
 var yyPgo = [...]uint8{
-	0, 137, 1, 117, 6, 2, 0, 95,
+	0, 118, 1, 142, 3, 4, 0, 137, 126,
 }
 
 var yyR1 = [...]int8{
-	0, 7, 2, 3, 3, 1, 1, 1, 1, 1,
+	0, 8, 2, 3, 3, 1, 1, 1, 1, 1,
 	1, 4, 4, 5, 5, 5, 5, 5, 5, 5,
 	5, 5, 5, 5, 5, 5, 5, 5, 6, 6,
-	6, 6, 6, 6, 6, 6,
+	6, 6, 6, 6, 6, 6, 6, 7, 7,
 }
 
 var yyR2 = [...]int8{
 	0, 1, 3, 2, 1, 4, 4, 6, 5, 7,
 	6, 1, 3, 1, 3, 2, 3, 3, 3, 3,
-	3, 3, 3, 3, 3, 3, 3, 3, 1, 3,
-	3, 3, 3, 3, 6, 4,
+	3, 3, 3, 3, 3, 3, 3, 3, 1, 1,
+	3, 3, 3, 3, 3, 6, 4, 1, 2,
 }
 
 var yyChk = [...]int16{
-	-1000, -7, -2, 4, -3, -1, 10, 12, 11, 6,
-	9, 5, -1, 29, 29, 29, 29, 29, -4, 22,
-	29, -4, -4, -5, 24, 29, 21, -6, -4, 23,
-	9, 8, -4, 30, -4, 30, 31, 30, 19, 20,
-	17, 18, -4, -5, -6, -5, 13, 14, 15, 16,
-	17, 18, 25, 26, 27, 28, 17, 18, 29, 29,
-	31, 30, -2, -2, -5, -5, -5, -5, 30, 30,
-	-6, 29, -6, -6, -6, -6, -6, -6, -6, -6,
-	-6, -4, -4, -4, -4, -6, 30, 7, -6, 31,
-	30, 30, -2, -6, 30,
+	-1000, -8, -2, 4, -3, -1, 10, 12, 11, 6,
+	9, 5, -1, 30, 30, 30, 30, 30, -4, 22,
+	30, -4, -4, -5, 25, 30, 21, -6, -4, 23,
+	-7, 9, 8, 24, -4, 31, -4, 31, 32, 31,
+	19, 20, 17, 18, -4, -5, -6, -5, 13, 14,
+	15, 16, 17, 18, 26, 27, 28, 29, 17, 18,
+	24, 30, 30, 32, 31, -2, -2, -5, -5, -5,
+	-5, 31, 31, -6, 30, -6, -6, -6, -6, -6,
+	-6, -6, -6, -6, -4, -4, -4, -4, -6, 31,
+	7, -6, 32, 31, 31, -2, -6, 31,
 }
 
 var yyDef = [...]int8{
 	0, -2, 1, 0, 0, 4, 0, 0, 0, 0,
 	0, 2, 3, 0, 0, 0, 0, 0, 0, 11,
 	0, 0, 0, 0, 13, 0, 0, 0, 0, 28,
-	0, 0, 0, 5, 0, 6, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 15, 0, 0, 0, 0,
+	29, 0, 0, 37, 0, 5, 0, 6, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 15, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 12, 0, 8, 16, 17, 18, 19, 14, 29,
-	20, 0, 21, 22, 23, 24, 25, 30, 31, 32,
-	33, 26, 27, 0, 0, 0, 7, 0, 0, 0,
-	35, 10, 9, 0, 34,
+	38, 0, 0, 0, 12, 0, 8, 16, 17, 18,
+	19, 14, 30, 20, 0, 21, 22, 23, 24, 25,
+	31, 32, 33, 34, 26, 27, 0, 0, 0, 7,
+	0, 0, 0, 36, 10, 9, 0, 35,
 }
 
 var yyTok1 = [...]int8{
@@ -172,13 +174,13 @@ var yyTok1 = [...]int8{
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	29, 30, 27, 25, 31, 26, 3, 28,
+	30, 31, 28, 26, 32, 27, 3, 29,
 }
 
 var yyTok2 = [...]int8{
 	2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
 	12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-	22, 23, 24,
+	22, 23, 24, 25,
 }
 
 var yyTok3 = [...]int8{
@@ -691,46 +693,64 @@ yydefault:
 			yyVAL.Expression = yyDollar[1].Number
 		}
 	case 29:
-		yyDollar = yyS[yypt-3 : yypt+1]
+		yyDollar = yyS[yypt-1 : yypt+1]
 //line jabl.y:76
 		{
-			yyVAL.Expression = &parenExpr{expr: yyDollar[2].Expression}
+			yyVAL.Expression = yyDollar[1].Expression
 		}
 	case 30:
 		yyDollar = yyS[yypt-3 : yypt+1]
 //line jabl.y:77
 		{
-			yyVAL.Expression = &mathExpr{op: '+', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+			yyVAL.Expression = &parenExpr{expr: yyDollar[2].Expression}
 		}
 	case 31:
 		yyDollar = yyS[yypt-3 : yypt+1]
 //line jabl.y:78
 		{
-			yyVAL.Expression = &mathExpr{op: '-', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+			yyVAL.Expression = &mathExpr{op: '+', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
 		}
 	case 32:
 		yyDollar = yyS[yypt-3 : yypt+1]
 //line jabl.y:79
 		{
-			yyVAL.Expression = &mathExpr{op: '*', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+			yyVAL.Expression = &mathExpr{op: '-', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
 		}
 	case 33:
 		yyDollar = yyS[yypt-3 : yypt+1]
 //line jabl.y:80
 		{
-			yyVAL.Expression = &mathExpr{op: '/', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+			yyVAL.Expression = &mathExpr{op: '*', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
 		}
 	case 34:
-		yyDollar = yyS[yypt-6 : yypt+1]
+		yyDollar = yyS[yypt-3 : yypt+1]
 //line jabl.y:81
+		{
+			yyVAL.Expression = &mathExpr{op: '/', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+		}
+	case 35:
+		yyDollar = yyS[yypt-6 : yypt+1]
+//line jabl.y:82
 		{
 			yyVAL.Expression = &fnStmt{fn: SET, expr: yyDollar[3].Expression, expr2: yyDollar[5].Expression}
 		}
-	case 35:
+	case 36:
 		yyDollar = yyS[yypt-4 : yypt+1]
-//line jabl.y:82
+//line jabl.y:83
 		{
 			yyVAL.Expression = &fnStmt{fn: GET, expr: yyDollar[3].Expression}
+		}
+	case 37:
+		yyDollar = yyS[yypt-1 : yypt+1]
+//line jabl.y:87
+		{
+			yyVAL.Expression = &rollExpr{num: 1, sides: yyDollar[1].Number}
+		}
+	case 38:
+		yyDollar = yyS[yypt-2 : yypt+1]
+//line jabl.y:88
+		{
+			yyVAL.Expression = &rollExpr{num: yyDollar[1].Number, sides: yyDollar[2].Number}
 		}
 	}
 	goto yystack /* stack new state and value */

@@ -14,7 +14,8 @@ import (
 func TestInterpreter(t *testing.T) {
 
 	loader := &testLoader{}
-	interpreter := NewInterpreter(loader)
+	// use a known seed for generating random numbers in tests to make them deterministic
+	interpreter := NewInterpreter(loader, WithRandomNumberGenerator(&fixedRandom{}))
 
 	err := filepath.Walk(filepath.Join("testdata"), func(path string, info os.FileInfo, err error) error {
 		if !info.IsDir() || path == "testdata" {
@@ -56,6 +57,13 @@ func TestInterpreter(t *testing.T) {
 		return nil
 	})
 	require.NoError(t, err)
+}
+
+type fixedRandom struct {
+}
+
+func (f *fixedRandom) Float64() float64 {
+	return 0.99999999999 // chosen by a fair dice roll #221 - actually it's just to give the max value of any dice roll so 1d6 will always be 6
 }
 
 type testLoader struct {

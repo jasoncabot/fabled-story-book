@@ -2,8 +2,11 @@ package jabl
 
 import (
 	"fmt"
+	"math"
+	"math/rand"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Character struct {
@@ -23,8 +26,13 @@ type Choice struct {
 
 type SectionId string
 
+type RandomNumberGenerator interface {
+	Float64() float64
+}
+
 type Interpreter struct {
 	loader SectionLoader
+	rand   RandomNumberGenerator
 }
 
 type State interface {
@@ -36,10 +44,25 @@ type SectionLoader interface {
 	LoadSection(identifier SectionId, onLoad func(code string, err error))
 }
 
-func NewInterpreter(loader SectionLoader) *Interpreter {
-	return &Interpreter{
-		loader: loader,
+type InterpreterOption func(*Interpreter)
+
+func WithRandomNumberGenerator(rng RandomNumberGenerator) InterpreterOption {
+	return func(i *Interpreter) {
+		i.rand = rng
 	}
+}
+
+func NewInterpreter(loader SectionLoader, options ...InterpreterOption) *Interpreter {
+	interpreter := &Interpreter{
+		loader: loader,
+		rand:   rand.New(rand.NewSource(time.Now().UTC().UnixNano())),
+	}
+
+	for _, option := range options {
+		option(interpreter)
+	}
+
+	return interpreter
 }
 
 func (i *Interpreter) Execute(identifier SectionId, state State, callback func(result *Result, err error)) {
@@ -216,6 +239,10 @@ func (i *Interpreter) printCode(stmt any, sb *strings.Builder, indent uint8) {
 		i.printCode(t.left, sb, indent)
 		sb.WriteRune(rune(t.op))
 		i.printCode(t.right, sb, indent)
+	case *rollExpr:
+		sb.WriteString(strconv.FormatFloat(t.num, 'f', -1, 64))
+		sb.WriteRune('d')
+		sb.WriteString(strconv.FormatFloat(t.sides, 'f', -1, 64))
 	case float64:
 		sb.WriteString(strconv.FormatFloat(t, 'f', -1, 64))
 	case string:
@@ -390,7 +417,12 @@ func (i *Interpreter) evalNum(e expr, state State) (float64, error) {
 			return left / right, nil
 		}
 		return 0, fmt.Errorf("invalid math operator")
-
+	case *rollExpr:
+		total := uint(0)
+		for j := 0; j < int(t.num); j++ {
+			total += uint(math.Floor(t.sides*i.rand.Float64())) + 1
+		}
+		return float64(total), nil
 	default:
 		return 0, fmt.Errorf("invalid node type")
 	}

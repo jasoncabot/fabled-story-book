@@ -61,6 +61,11 @@ type mathExpr struct {
 	right expr
 }
 
+type rollExpr struct {
+	num   float64
+	sides float64
+}
+
 type lexer struct {
 	s   scanner.Scanner
 	err error
@@ -172,6 +177,15 @@ func (l *lexer) Lex(lval *yySymType) int {
 		} else if text == "false" {
 			lval.Boolean = false
 			return BOOLEAN
+		} else if rune(text[0]) == 'd' {
+			// check if this is a dice roll
+			rollVal, err := strconv.ParseFloat(text[1:], 64)
+			if err != nil {
+				l.Error(fmt.Sprintf("invalid dice roll: %s", text))
+				return EOF
+			}
+			lval.Number = rollVal
+			return DICE
 		} else if unicode.IsDigit(rune(text[0])) {
 			numVal, err := strconv.ParseFloat(text, 64)
 			if err != nil {

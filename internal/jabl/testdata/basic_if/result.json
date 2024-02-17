@@ -1,5 +1,5 @@
 {
-  "output": "hello world\n",
+  "output": "true\n!false\ntrue && true\ntrue || true\ntrue || false\nfalse || true\n",
   "choices": null,
   "transition": ""
 }
