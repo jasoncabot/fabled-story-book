@@ -35,4 +35,10 @@
     if (false || false) {
         print("false || false")
     }
+
+    if (false) {
+        print("true")
+    } else {
+        print("false")
+    }
 }

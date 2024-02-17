@@ -1,5 +1,5 @@
 {
-  "output": "hello world\nhello world\n",
+  "output": "a == 10\na == b\n",
   "choices": null,
   "transition": ""
 }

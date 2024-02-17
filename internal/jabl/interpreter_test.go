@@ -2,6 +2,7 @@ package jabl
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"os"
 	"path/filepath"
@@ -59,6 +60,22 @@ func TestInterpreter(t *testing.T) {
 	require.NoError(t, err)
 }
 
+func TestInterpreterError(t *testing.T) {
+	t.Run("when the section loader returns an error, the interpreter should return it", func(t *testing.T) {
+		loadErr := errors.New("failed to load due to some dodgy reason")
+		loader := &testLoader{testErr: loadErr}
+		interpreter := NewInterpreter(loader)
+
+		state := NewEmptyState()
+		interpreter.Execute(SectionId("section_loader_error"), state, func(r *Result, err error) {
+			assert.NotNil(t, err)
+			assert.Nil(t, r)
+
+			assert.ErrorIs(t, err, loadErr)
+		})
+	})
+}
+
 type fixedRandom struct {
 }
 
@@ -67,9 +84,15 @@ func (f *fixedRandom) Float64() float64 {
 }
 
 type testLoader struct {
+	testErr error
 }
 
 func (t *testLoader) LoadSection(identifier SectionId, onLoad func(code string, err error)) {
+	if t.testErr != nil {
+		onLoad("", t.testErr)
+		return
+	}
+
 	file, err := os.Open(filepath.Join("testdata", string(identifier), "code.jabl"))
 	if err != nil {
 		onLoad("", err)
@@ -86,6 +109,12 @@ func (t *testLoader) LoadSection(identifier SectionId, onLoad func(code string, 
 
 type testState struct {
 	testValues map[string]float64
+}
+
+func NewEmptyState() *testState {
+	return &testState{
+		testValues: map[string]float64{},
+	}
 }
 
 func NewTestState(before string) (*testState, error) {

@@ -327,11 +327,11 @@ func (i *Interpreter) compareBoolean(state State, op int, left expr, right expr)
 }
 
 func (i *Interpreter) compareString(state State, op int, left expr, right expr) (bool, error) {
-	lval, err := i.evalBool(left, state)
+	lval, err := i.evalStr(left)
 	if err != nil {
 		return false, err
 	}
-	rval, err := i.evalBool(right, state)
+	rval, err := i.evalStr(right)
 	if err != nil {
 		return false, err
 	}
