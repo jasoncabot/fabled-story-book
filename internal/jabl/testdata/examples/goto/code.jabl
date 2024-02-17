@@ -1,0 +1,5 @@
+{
+    goto("first")
+    goto("second")
+    goto("final")
+}

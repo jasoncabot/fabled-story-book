@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -18,8 +19,8 @@ func TestInterpreter(t *testing.T) {
 	// use a known seed for generating random numbers in tests to make them deterministic
 	interpreter := NewInterpreter(loader, WithRandomNumberGenerator(&fixedRandom{}))
 
-	err := filepath.Walk(filepath.Join("testdata"), func(path string, info os.FileInfo, err error) error {
-		if !info.IsDir() || path == "testdata" {
+	err := filepath.Walk(filepath.Join("testdata", "examples"), func(path string, info os.FileInfo, err error) error {
+		if !info.IsDir() || path == "testdata/examples" {
 			return nil
 		}
 
@@ -29,7 +30,7 @@ func TestInterpreter(t *testing.T) {
 		// Run a test for every example found in the testdata folder
 		t.Run(name, func(t *testing.T) {
 			// Ensure that each test runs with a clean state
-			state, err := NewTestState(filepath.Join("testdata", name, "state_before.json"))
+			state, err := NewTestState(filepath.Join("testdata", "examples", name, "state_before.json"))
 			require.NoError(t, err)
 
 			// execute the code in the file
@@ -41,7 +42,7 @@ func TestInterpreter(t *testing.T) {
 				resultAsJSON, err := json.Marshal(r)
 				assert.Nil(t, err)
 				// load file print_string.json
-				expectedResult := loadFile(t, filepath.Join("testdata", name, "result.json"))
+				expectedResult := loadFile(t, filepath.Join("testdata", "examples", name, "result.json"))
 
 				assert.JSONEq(t, expectedResult, string(resultAsJSON))
 
@@ -50,7 +51,7 @@ func TestInterpreter(t *testing.T) {
 				require.NoError(t, err)
 
 				// load file .state.2
-				expectedState := loadFile(t, filepath.Join("testdata", name, "state_after.json"))
+				expectedState := loadFile(t, filepath.Join("testdata", "examples", name, "state_after.json"))
 				assert.JSONEq(t, expectedState, string(stateAsJSON))
 			})
 
@@ -76,6 +77,43 @@ func TestInterpreterError(t *testing.T) {
 	})
 }
 
+func TestInterpreterPrintString(t *testing.T) {
+	loader := &testLoader{}
+	interpreter := NewInterpreter(loader, WithRandomNumberGenerator(&fixedRandom{}))
+
+	yyErrorVerbose = true
+
+	err := filepath.Walk(filepath.Join("testdata", "pretty_printing"), func(path string, info os.FileInfo, err error) error {
+		if info.IsDir() || !strings.HasSuffix(path, ".jabl") {
+			return nil
+		}
+
+		code := loadFile(t, path)
+		formattedCode := loadFile(t, path+".formatted")
+		lexer := newLexer(strings.NewReader(code))
+		parseResult := yyParse(lexer)
+		require.NoError(t, lexer.err)
+		require.Equal(t, parseResult, 0, "failed to parse code")
+
+		sb := &strings.Builder{}
+		interpreter.printCode(lexer.ast, sb, 0)
+
+		assert.Equal(t, formattedCode, sb.String())
+
+		// write formattedCode to an .out file at the same place to make it easy to debug
+		if formattedCode != sb.String() {
+			outFile, err := os.Create(path + ".out")
+			require.NoError(t, err)
+			defer outFile.Close()
+			_, err = outFile.WriteString(sb.String())
+			require.NoError(t, err)
+		}
+
+		return nil
+	})
+	assert.NoError(t, err)
+}
+
 type fixedRandom struct {
 }
 
@@ -93,7 +131,7 @@ func (t *testLoader) LoadSection(identifier SectionId, onLoad func(code string, 
 		return
 	}
 
-	file, err := os.Open(filepath.Join("testdata", string(identifier), "code.jabl"))
+	file, err := os.Open(filepath.Join("testdata", "examples", string(identifier), "code.jabl"))
 	if err != nil {
 		onLoad("", err)
 		return

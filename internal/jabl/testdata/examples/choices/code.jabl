@@ -1,0 +1,10 @@
+{
+    choice("first", {goto("first")})
+    choice("second", {goto("second")})
+    if (true) {
+        choice("third", {goto("third")})
+    }
+    if (false) {
+        choice("fourth", {goto("fourth")})
+    }
+}

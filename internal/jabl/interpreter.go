@@ -237,7 +237,9 @@ func (i *Interpreter) printCode(stmt any, sb *strings.Builder, indent uint8) {
 		i.printCode(t.right, sb, indent)
 	case *mathExpr:
 		i.printCode(t.left, sb, indent)
+		sb.WriteRune(' ')
 		sb.WriteRune(rune(t.op))
+		sb.WriteRune(' ')
 		i.printCode(t.right, sb, indent)
 	case *rollExpr:
 		sb.WriteString(strconv.FormatFloat(t.num, 'f', -1, 64))
@@ -266,6 +268,8 @@ var (
 		CMP_LTE: " <= ",
 		CMP_GT:  " > ",
 		CMP_GTE: " >= ",
+		CMP_AND: " && ",
+		CMP_OR:  " || ",
 	}
 
 	printableFn = map[int]string{

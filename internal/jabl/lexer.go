@@ -202,5 +202,6 @@ func (l *lexer) Lex(lval *yySymType) int {
 }
 
 func (l *lexer) Error(msg string) {
-	l.err = errors.Join(l.err, fmt.Errorf("lex error: %s", msg))
+	err := fmt.Errorf("%s:%d:%d: %s", l.s.Pos().Filename, l.s.Pos().Line, l.s.Pos().Column, msg)
+	l.err = errors.Join(l.err, err)
 }

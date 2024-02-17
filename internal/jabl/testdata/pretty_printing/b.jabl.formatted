@@ -1,0 +1,17 @@
+{
+	if (get("one") == get("two")) {
+		set("three",3)
+	} else {
+		set("five",5)
+	}
+	print("seven")
+	print(("eight"))
+	choice("nine",{
+		if (1 == 1 || 2 > 2 || 3 < 3 || 4 >= 4 || 5 <= 5 || 6 != 6 || true || false && !true && !false || 5d6 == 2d3) {
+			goto("ten")
+		} else {
+			goto("eleven")
+		}
+	})
+	goto("ten")
+}

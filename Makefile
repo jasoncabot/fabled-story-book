@@ -9,3 +9,5 @@ build:
 wasm:
 	GOOS=js GOARCH=wasm go build -o ./web/test.wasm ./cmd/wasm/main.go
 	
+test:
+	go test -v ./...

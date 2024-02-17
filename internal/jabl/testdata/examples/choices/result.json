@@ -1,0 +1,18 @@
+{
+  "output": "",
+  "choices": [
+    {
+      "text": "first",
+      "code": "{\n\tgoto(\"first\")\n}"
+    },
+    {
+      "text": "second",
+      "code": "{\n\tgoto(\"second\")\n}"
+    },
+    {
+      "text": "third",
+      "code": "{\n\tgoto(\"third\")\n}"
+    }
+  ],
+  "transition": ""
+}
