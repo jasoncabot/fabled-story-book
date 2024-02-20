@@ -4,20 +4,41 @@
     if (get("has-oak-door-key") == 1) {
         print("The mangled remains of a frog are lying on the floor.")
 
-        choice("")
-    } else {
-        print("An enormous frog is staring at you from the other side of the room.")
-
-        choice("Attack the frog", {
-            fight("frog-1", {
-                goto("guard-room/success.jabl")
-            }, {
-                goto("guard-room/failure.jabl")
-            })
+        choice("Investigate the frog", {
+            print("You find nothing of value.")
+            choice("Ok", {goto("shabby-door.jabl")})
         })
+    } else {
+
+        if (get("attacked-frog") != 1) {
+            print("An enormous frog is staring at you from the other side of the room.")
+            set("frog-health", 10d6)
+        } else {
+            if (get("frog-health") > 0) {
+                print("The frog glares at you but makes no move to attack back.")
+            }
+        }
+
+        if (get("frog-health") <= 0) {
+            print("The frog is dead.")
+            choice("Search the frog", {
+                print("You find a key.")
+                set("has-oak-door-key", 1)
+                choice("Ok", {goto("shabby-door.jabl")})
+            })
+        } else {
+            print("The frog looks like it is about to attack you.")
+
+            choice("Attack the frog", {
+                print("You attack the frog, it is not yet dead")
+                set("frog-health", get("frog-health") - 1d6)
+                set("attacked-frog", 1)
+                choice("Ok", {goto("shabby-door.jabl")})
+            })
+        }
     }
 
     choice("Leave", {
-        goto("")
+        goto("upstairs.jabl")
     })
 }

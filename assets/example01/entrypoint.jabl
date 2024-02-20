@@ -6,13 +6,7 @@
     print("You must escape ...")
 
     choice("Look at skeleton", {
-        if (get("examined-skeleton") == -100.6) {
-            print("You have already examined this skeleton")
-        } else {
-            set("examined-skeleton", -100.6)
-            goto("entrypoint.jabl")
-            print("You find nothing of value")
-        }
+        goto("skeleton.jabl")
     })
     choice("Go upstairs", {
         goto("upstairs.jabl")

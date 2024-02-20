@@ -72,8 +72,24 @@ func execSection(this js.Value, inputs []js.Value) any {
 	return nil
 }
 
+func evalCode(this js.Value, inputs []js.Value) any {
+	callback := inputs[1]
+
+	// The interpreter delegates back to the loader for getting the code to execute from an identifier
+	interpreter.Evaluate(inputs[0].String(), state, func(section *jabl.Result, err error) {
+		jsonValueOfRes, err := json.Marshal(section)
+		if err != nil {
+			callback.Invoke(js.Null(), err.Error())
+		} else {
+			callback.Invoke(string(jsonValueOfRes), js.Null())
+		}
+	})
+	return nil
+}
+
 func registerCallbacks() {
 	js.Global().Set("execSection", js.FuncOf(execSection))
+	js.Global().Set("evalCode", js.FuncOf(evalCode))
 }
 
 // A state mapper that delegates back to Javascript for getting and setting state

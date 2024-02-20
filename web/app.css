@@ -1,0 +1,70 @@
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  min-height: --webkit-fill-available;
+
+  overflow: none;
+  touch-action: pinch-zoom;
+
+  background-color: #01130d;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.container {
+  height: 88vh;
+  max-width: 600px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: none;
+  padding: 1em;
+}
+
+.console {
+  display: flex;
+  flex: 1;
+  padding: 2em;
+  background-color: #022117;
+  color: #41ff00;
+  border-radius: 18px;
+  margin-bottom: 0;
+  overflow-y: scroll;
+}
+
+.console-text {
+  animation: type 2s steps(40) infinite;
+}
+
+.buttons {
+  margin-top: 1em;
+  display: flex;
+  justify-content: start;
+  gap: 1em;
+  width: 100%;
+  overflow-x: scroll;
+}
+
+.button {
+  background-color: #022117;
+  border-radius: 5px;
+  border: none;
+  color: #41ff00;
+  cursor: pointer;
+  fill: #41ff00;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1em;
+  text-align: left;
+  padding: 1em;
+  min-width: 200px;
+}
+
+.button:hover {
+  background-color: #023021;
+}
+
+.icon {
+  color: #41ff00;
+  width: 16px;
+  height: 16px;
+}

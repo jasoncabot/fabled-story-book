@@ -74,6 +74,13 @@ func (p *jablProgram) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			p.transition = ""
 		}
 		p.err = msg.err
+
+		if p.transition != "" {
+			p.currentSelection = 0
+			p.currentSection = p.transition
+			return p, execSection(p.interpreter, p.state, p.transition)
+		}
+
 		return p, nil
 
 	}
@@ -82,6 +89,7 @@ func (p *jablProgram) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (p *jablProgram) View() string {
+
 	// The header
 	s := p.text + "\n\n"
 

@@ -4,10 +4,14 @@
         if (get("has-oak-door-key") == 1) {
             goto("ending.jabl")
         } else {
-            print("It's locked")
+            print("It's locked, you need a key.")
+
+            choice("Back to the dining hall", {
+                goto("upstairs.jabl")
+            })
         }
     })
     choice("Back to the dining hall", {
-        goto("hallway.jabl")
+        goto("upstairs.jabl")
     })
 }
