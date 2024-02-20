@@ -1,6 +1,6 @@
 module github.com/jasoncabot/fabled-story-book
 
-go 1.22.0
+go 1.21
 
 require (
 	github.com/charmbracelet/bubbletea v0.25.0
