@@ -96,7 +96,7 @@ func registerCallbacks() {
 type localStorageMapper struct{}
 
 func (s *localStorageMapper) Get(key string) (float64, error) {
-	value := js.Global().Get("localStorage").Call("getItem", key)
+	value := js.Global().Get("bookStorage").Call("getItem", key)
 	if value.IsNull() {
 		return 0, nil
 	}
@@ -104,6 +104,6 @@ func (s *localStorageMapper) Get(key string) (float64, error) {
 }
 
 func (s *localStorageMapper) Set(key string, value float64) error {
-	js.Global().Get("localStorage").Call("setItem", key, value)
+	js.Global().Get("bookStorage").Call("setItem", key, value)
 	return nil
 }

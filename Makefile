@@ -7,7 +7,9 @@ build:
 
 # Build the wasm file
 wasm:
-	GOOS=js GOARCH=wasm go build -o ./web/test.wasm ./cmd/wasm/main.go
-	
+	GOOS=js GOARCH=wasm tinygo build -o ./web/test.wasm -target wasm -no-debug ./cmd/wasm/main.go
+
+# Run tests and generate coverage report
 test:
-	go test -v ./...
+	go test -v -coverprofile=coverage.out -covermode=atomic  ./...
+	go tool cover -html=coverage.out -o coverage.html

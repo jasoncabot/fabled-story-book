@@ -1,4 +1,4 @@
-//go:generate go run golang.org/x/tools/cmd/goyacc@v0.18.0 -o parser.go jabl.y
+//go:generate go run golang.org/x/tools/cmd/goyacc@v0.18.0 -l -o parser.go jabl.y
 package jabl
 
 import (

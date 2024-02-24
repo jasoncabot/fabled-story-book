@@ -15,15 +15,13 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: '1.22'
-      - name: Unit Tests
-        run: go test -v ./... -coverprofile=coverage.out -covermode=atomic
-      # - name: Generate Coverage HTML
-      #   run: go tool cover -html=coverage.out -o coverage.html
-      # - name: Code Coverage
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: coverage
-      #     path: coverage.html
+      - name: Test
+        run: make test
+      - name: Code Coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.html
 
   build_cli:
     runs-on: ubuntu-latest

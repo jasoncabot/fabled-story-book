@@ -1,3 +1,4 @@
 {
     set("result", 1d6)
+    set("result2", d20)
 }

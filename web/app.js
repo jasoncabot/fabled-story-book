@@ -34,12 +34,12 @@ const renderChoices = (choices) => {
     button.classList.add("button");
 
     button.innerHTML = choice.text;
-    button.addEventListener("click", onChoiceSelected.bind(null, choice.code));
+    button.addEventListener("click", runJABL.bind(null, choice.code));
     choiceButtons.appendChild(button);
   });
 };
 
-const onChoiceSelected = (code) => {
+const runJABL = (code) => {
   jablEval(code)
     .then((result) => {
       render(result, null);
@@ -57,10 +57,11 @@ const render = (result, err) => {
 
   renderText(result.output);
   renderChoices(result.choices);
-  if (result && result.transition && result.transition.length > 0) {
-    const next = exec(result.transition)
-      .then((a) => {
-        render(a, null);
+  const transition = result?.transition || "";
+  if (transition.length > 0) {
+    exec(transition)
+      .then((response) => {
+        render(response, null);
       })
       .catch((e) => {
         render(null, e);
@@ -83,12 +84,65 @@ const run = async () => {
   );
   go.run(instance);
 
+  registerGlobals();
+
+  // Each source has it's own storage so even if they use the same variables they don't collide
+  if (localStorage.getItem("system:source")) {
+    startSelection();
+  } else {
+    showSelectionChoices();
+  }
+};
+
+const registerGlobals = () => {
+  window.bookStorage = {
+    getItem: (key) => {
+      const sourceId = localStorage.getItem("system:source");
+      const prefix = sourceId ? `fsb:${sourceId}:` : "";
+      return localStorage.getItem(prefix + key);
+    },
+    setItem: (key, value) => {
+      const sourceId = localStorage.getItem("system:source");
+      const prefix = sourceId ? `fsb:${sourceId}:` : "";
+      localStorage.setItem(prefix + key, value);
+    },
+  };
+  window.resetProgress = () => {
+    // hide the settings menu
+    document.querySelector(".popover").classList.add("hidden");
+
+    // Remove appropriate keys from local storage
+    const sourceId = localStorage.getItem("system:source");
+    const prefix = sourceId ? `fsb:${sourceId}:` : "";
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key.startsWith(prefix)) {
+        localStorage.removeItem(key);
+      }
+    }
+    localStorage.setItem("system:section", "entrypoint.jabl");
+
+    // And restart the game
+    startSelection();
+  };
+  window.changeStory = () => {
+    // hide the settings menu
+    document.querySelector(".popover").classList.add("hidden");
+
+    localStorage.removeItem("system:source");
+    localStorage.removeItem("system:section");
+
+    showSelectionChoices();
+  };
   window.loadSection = (identifier, callback) => {
-    console.log("loading section " + identifier);
-    fetch(
-      "https://raw.githubusercontent.com/jasoncabot/fabled-story-book/main/assets/example01/" +
-        identifier
-    )
+    const sourceId = localStorage.getItem("system:source");
+    const sourceURL = {
+      1: "https://raw.githubusercontent.com/jasoncabot/fabled-story-book/main/assets/example01/",
+    }[sourceId];
+    if (!sourceURL) {
+      throw new Error("Invalid source id");
+    }
+    fetch(sourceURL + identifier)
       .then((response) => response.text())
       .then((text) => {
         callback(text, null);
@@ -97,8 +151,11 @@ const run = async () => {
         callback(null, err);
       });
   };
+};
 
-  exec("entrypoint.jabl")
+const startSelection = () => {
+  let currentSection = localStorage.getItem("system:section");
+  exec(currentSection)
     .then((result) => {
       render(result, null);
     })
@@ -107,9 +164,20 @@ const run = async () => {
     });
 };
 
+const showSelectionChoices = () => {
+  runJABL(`{
+    print("Welcome to the game!")
+    print("Which book would you like to play?")
+    choice("Example 1", {
+      set("system:source", 1)
+      goto("entrypoint.jabl")
+    })
+  }`);
+};
+
 const exec = (sectionId) => {
   return new Promise((resolve, reject) => {
-    console.log("executing section " + sectionId);
+    localStorage.setItem("system:section", sectionId);
     window.execSection(sectionId, (value, err) => {
       if (err) {
         reject(err);
@@ -135,4 +203,9 @@ const jablEval = (code) => {
       }
     })
   );
+};
+
+const toggleSettings = () => {
+  const popover = document.querySelector(".popover");
+  popover.classList.toggle("hidden");
 };

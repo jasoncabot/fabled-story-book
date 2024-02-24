@@ -12,10 +12,10 @@
 
         if (get("attacked-frog") != 1) {
             print("An enormous frog is staring at you from the other side of the room.")
-            set("frog-health", 10d6)
+            set("frog-health", 2d6)
         } else {
             if (get("frog-health") > 0) {
-                print("The frog glares at you but makes no move to attack back.")
+                print("The frog looks hurt but makes no move to attack back.")
             }
         }
 
@@ -30,8 +30,11 @@
             print("The frog looks like it is about to attack you.")
 
             choice("Attack the frog", {
-                print("You attack the frog, it is not yet dead")
+                print("You attack the frog.")
                 set("frog-health", get("frog-health") - 1d6)
+                if (get("frog-health") <= 0) {
+                    print("With a loud squishing sound the frog is no more.")
+                }
                 set("attacked-frog", 1)
                 choice("Ok", {goto("shabby-door.jabl")})
             })

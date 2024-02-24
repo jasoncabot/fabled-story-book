@@ -68,3 +68,81 @@ body {
   width: 16px;
   height: 16px;
 }
+
+.hidden {
+  display: none;
+}
+
+.settings-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 38px;
+  height: 38px;
+  padding: 0.5em;
+  background-color: #022117;
+  border-radius: 5px;
+  border: none;
+  color: #41ff00;
+  cursor: pointer;
+  fill: #41ff00;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1em;
+  text-align: left;
+  z-index: 2;
+}
+
+.settings-button:hover {
+  background-color: #023021;
+}
+
+.popover {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #022117;
+  border-radius: 5px;
+  border: none;
+  color: #41ff00;
+  cursor: pointer;
+  fill: #41ff00;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1em;
+  text-align: left;
+  z-index: 1;
+}
+
+.popover {
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  padding-top: 3em;
+}
+
+.option {
+  display: flex;
+  justify-content: space-between;
+  gap: 2px;
+  align-items: center;
+  padding: 1em;
+}
+
+.option:hover {
+  background-color: #023021;
+}
