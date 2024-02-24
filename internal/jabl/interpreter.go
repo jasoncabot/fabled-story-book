@@ -119,51 +119,10 @@ func (i *Interpreter) eval(node any, state State, result *Result) error {
 		}
 		return nil
 	case *fnStmt:
-		switch t.fn {
-		case PRINT:
-			expression, err := i.evalStr(t.expr)
-			if err != nil {
-				return err
-			}
-			result.Output += expression + "\n"
-			return nil
-		case GOTO:
-			identifier, err := i.evalStr(t.expr)
-			if err != nil {
-				return err
-			}
-			result.Transition = SectionId(identifier)
-			return nil
-		case CHOICE:
-			expression, err := i.evalStr(t.expr)
-			if err != nil {
-				return err
-			}
-			sb := &strings.Builder{}
-			i.printCode(t.block, sb, 0)
-
-			code := sb.String()
-			result.Choices = append(result.Choices, &Choice{
-				Text: expression,
-				Code: code,
-			})
-			return nil
-		case SET:
-			key, err := i.evalStr(t.expr)
-			if err != nil {
-				return err
-			}
-			val, err := i.evalNum(t.expr2, state)
-			if err != nil {
-				return err
-			}
-			return state.Set(key, val)
-		default:
-			if x, ok := printableFn[t.fn]; ok {
-				return fmt.Errorf("%s not supported in this context", x)
-			}
-			return fmt.Errorf("invalid function token: %d", t.fn)
+		if err := i.evalFn(t, state, result); err != nil {
+			return err
 		}
+		return nil
 	case *ifStmt:
 		val, err := i.evalBool(t.cond, state)
 		if err != nil {
@@ -304,7 +263,7 @@ func (i *Interpreter) evalBool(e expr, state State) (bool, error) {
 		}
 		return false, fmt.Errorf("invalid comparison operator")
 	default:
-		return false, fmt.Errorf("invalid node type")
+		return false, fmt.Errorf("invalid node type for boolean")
 	}
 }
 
@@ -331,11 +290,11 @@ func (i *Interpreter) compareBoolean(state State, op int, left expr, right expr)
 }
 
 func (i *Interpreter) compareString(state State, op int, left expr, right expr) (bool, error) {
-	lval, err := i.evalStr(left)
+	lval, err := i.evalStr(left, state)
 	if err != nil {
 		return false, err
 	}
-	rval, err := i.evalStr(right)
+	rval, err := i.evalStr(right, state)
 	if err != nil {
 		return false, err
 	}
@@ -384,13 +343,13 @@ func (i *Interpreter) evalNum(e expr, state State) (float64, error) {
 	case *fnStmt:
 		switch t.fn {
 		case GET:
-			key, err := i.evalStr(t.expr)
+			key, err := i.evalStr(t.expr, state)
 			if err != nil {
 				return 0, err
 			}
 			return state.Get(key)
 		case SET:
-			key, err := i.evalStr(t.expr)
+			key, err := i.evalStr(t.expr, state)
 			if err != nil {
 				return 0, err
 			}
@@ -399,8 +358,12 @@ func (i *Interpreter) evalNum(e expr, state State) (float64, error) {
 				return 0, err
 			}
 			return val, state.Set(key, val)
+		default:
+			if name, ok := printableFn[t.fn]; ok {
+				return 0, fmt.Errorf("%s not convertible to num", name)
+			}
+			return 0, fmt.Errorf("invalid function token in num: %d", t.fn)
 		}
-		return 0, fmt.Errorf("invalid numeric function")
 	case *mathExpr:
 		left, err := i.evalNum(t.left, state)
 		if err != nil {
@@ -420,7 +383,7 @@ func (i *Interpreter) evalNum(e expr, state State) (float64, error) {
 		case '/':
 			return left / right, nil
 		}
-		return 0, fmt.Errorf("invalid math operator")
+		return 0, fmt.Errorf("invalid operator %c for number", t.op)
 	case *rollExpr:
 		total := uint(0)
 		for j := 0; j < int(t.num); j++ {
@@ -428,17 +391,123 @@ func (i *Interpreter) evalNum(e expr, state State) (float64, error) {
 		}
 		return float64(total), nil
 	default:
-		return 0, fmt.Errorf("invalid node type")
+		return 0, fmt.Errorf("invalid node type for number")
 	}
 }
 
-func (i *Interpreter) evalStr(e expr) (string, error) {
+func (i *Interpreter) evalFn(f *fnStmt, state State, result *Result) error {
+	switch f.fn {
+	case PRINT:
+		expression, err := i.evalStr(f.expr, state)
+		if err != nil {
+			return err
+		}
+		result.Output += expression + "\n"
+		return nil
+	case GOTO:
+		identifier, err := i.evalStr(f.expr, state)
+		if err != nil {
+			return err
+		}
+		result.Transition = SectionId(identifier)
+		return nil
+	case CHOICE:
+		expression, err := i.evalStr(f.expr, state)
+		if err != nil {
+			return err
+		}
+		sb := &strings.Builder{}
+		i.printCode(f.block, sb, 0)
+
+		code := sb.String()
+		result.Choices = append(result.Choices, &Choice{
+			Text: expression,
+			Code: code,
+		})
+		return nil
+	case SET:
+		key, err := i.evalStr(f.expr, state)
+		if err != nil {
+			return err
+		}
+		val, err := i.evalNum(f.expr2, state)
+		if err != nil {
+			return err
+		}
+		return state.Set(key, val)
+	default:
+		if name, ok := printableFn[f.fn]; ok {
+			return fmt.Errorf("%s not supported in this context", name)
+		}
+		return fmt.Errorf("invalid function token: %d", f.fn)
+	}
+}
+
+func (i *Interpreter) evalStr(e expr, state State) (string, error) {
 	switch t := e.(type) {
 	case string:
 		return t, nil
 	case *parenExpr:
-		return i.evalStr(t.expr)
+		return i.evalStr(t.expr, state)
+	case *mathExpr:
+		left, err := i.evalStr(t.left, state)
+		if err != nil {
+			return "", err
+		}
+		right, err := i.evalStr(t.right, state)
+		if err != nil {
+			return "", err
+		}
+		switch t.op {
+		case '+':
+			return left + right, nil
+		}
+		return "", fmt.Errorf("invalid operator %c for string", t.op)
+	case *rollExpr:
+		val, err := i.evalNum(t, state)
+		if err != nil {
+			return "", err
+		}
+		return i.evalStr(val, state)
+	case *fnStmt:
+		switch t.fn {
+		case GET:
+			key, err := i.evalStr(t.expr, state)
+			if err != nil {
+				return "", err
+			}
+			val, err := state.Get(key)
+			if err != nil {
+				return "", err
+			}
+			return i.evalStr(val, state)
+		case SET:
+			key, err := i.evalStr(t.expr, state)
+			if err != nil {
+				return "", err
+			}
+			val, err := i.evalNum(t.expr2, state)
+			if err != nil {
+				return "", err
+			}
+			if err := state.Set(key, val); err != nil {
+				return "", err
+			}
+			return i.evalStr(val, state)
+		default:
+			if name, ok := printableFn[t.fn]; ok {
+				return "", fmt.Errorf("%s not convertible to string", name)
+			}
+			return "", fmt.Errorf("invalid function token in string: %d", t.fn)
+		}
+	case float64:
+		return strconv.FormatFloat(t, 'f', -1, 64), nil
+	case bool:
+		if t {
+			return "true", nil
+		}
+		return "false", nil
 	default:
-		return "", fmt.Errorf("invalid node type")
+		return "", fmt.Errorf("invalid node type for string")
 	}
 }

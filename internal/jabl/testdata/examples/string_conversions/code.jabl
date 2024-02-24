@@ -1,0 +1,12 @@
+{
+    print("you rolled " + d20)
+    print(4d8 + " was rolled")
+    print(10 + " + " + 10 + " = " + 20)
+    print(false + " is " + false)
+    print(true + " is " + true)
+    set("a", 10)
+    print("a is " + get("a"))
+    print("a is now " + set("a", get("a") + 10))
+    print("a is now " + get("a"))
+    print("4d10 is " + set("b", 4d10))
+}

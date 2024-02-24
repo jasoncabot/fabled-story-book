@@ -49,8 +49,13 @@ stmt:
       ;
 
 strExpr:
-       STRING                   { $$ = $1 }
-       | '(' strExpr ')'        { $$ = &parenExpr{expr: $2} }
+        STRING                    { $$ = $1 }
+      | '(' strExpr ')'           { $$ = &parenExpr{expr: $2} }
+      | strExpr '+' strExpr       { $$ = &mathExpr{op: '+', left: $1, right: $3} }
+      | strExpr '+' numExpr       { $$ = &mathExpr{op: '+', left: $1, right: $3} }
+      | numExpr '+' strExpr       { $$ = &mathExpr{op: '+', left: $1, right: $3} }
+      | strExpr '+' boolExpr      { $$ = &mathExpr{op: '+', left: $1, right: $3} }
+      | boolExpr '+' strExpr      { $$ = &mathExpr{op: '+', left: $1, right: $3} }
      ;
 
 boolExpr:
