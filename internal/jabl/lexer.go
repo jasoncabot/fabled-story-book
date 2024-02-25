@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"strings"
 	"text/scanner"
 	"unicode"
 )
@@ -169,7 +170,15 @@ func (l *lexer) Lex(lval *yySymType) int {
 	default:
 		if text[0] == '"' && text[len(text)-1] == '"' {
 			// trim the start and end quotes and add a newline
-			lval.String = text[1 : len(text)-1]
+			inner := text[1 : len(text)-1]
+
+			// replace escaped characters
+			inner = strings.ReplaceAll(inner, "\\n", "\n")
+			inner = strings.ReplaceAll(inner, "\\t", "\t")
+			inner = strings.ReplaceAll(inner, "\\\"", "\"")
+
+			lval.String = inner
+
 			return STRING
 		} else if text == "true" {
 			lval.Boolean = true

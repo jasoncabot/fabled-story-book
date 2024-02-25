@@ -1,0 +1,10 @@
+{
+  "output": "",
+  "choices": [
+    {
+      "text": "a",
+      "code": "{\n\tgoto(get(\"a\") + 2d6 + \".jabl\")\n}"
+    }
+  ],
+  "transition": "6.jabl"
+}

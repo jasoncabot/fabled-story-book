@@ -1,0 +1,7 @@
+{
+    goto(1d6 + ".jabl")
+    set("a", 1d6)
+    choice("a", {
+        goto(get("a") + 2d6 + ".jabl")
+    })
+}

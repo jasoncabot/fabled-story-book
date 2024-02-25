@@ -11,11 +11,52 @@ const renderText = (text) => {
 
   intervalId = setInterval(() => {
     if (text && textIndex < text.length) {
-      if (text.charAt(textIndex) === "\n") {
-        consoleText.innerHTML += "<br/><br/>";
-      } else {
-        consoleText.innerHTML += text.charAt(textIndex);
+      switch (text.charAt(textIndex)) {
+        case "\n":
+          consoleText.innerHTML += "<br/><br/>";
+          break;
+        case "*":
+          let boldText = "";
+          textIndex++;
+          while (text.charAt(textIndex) !== "*") {
+            boldText += text.charAt(textIndex);
+            textIndex++;
+          }
+          consoleText.innerHTML += `<b>${boldText}</b>`;
+          break;
+        case "_":
+          let underlineText = "";
+          textIndex++;
+          while (text.charAt(textIndex) !== "_") {
+            underlineText += text.charAt(textIndex);
+            textIndex++;
+          }
+          consoleText.innerHTML += `<u>${underlineText}</u>`;
+          break;
+        case "`":
+          let codeText = "";
+          textIndex++;
+          while (text.charAt(textIndex) !== "`") {
+            codeText += text.charAt(textIndex);
+            textIndex++;
+          }
+          consoleText.innerHTML += `<code>${codeText}</code>`;
+          break;
+        case "/":
+          let italicText = "";
+          textIndex++;
+          while (text.charAt(textIndex) !== "/") {
+            italicText += text.charAt(textIndex);
+            textIndex++;
+          }
+          consoleText.innerHTML += `<i>${italicText}</i>`;
+          break;
+        default:
+          console.log(text.charAt(textIndex));
+          consoleText.innerHTML += text.charAt(textIndex);
+          break;
       }
+
       // scroll consoleText to the bottom of what it is displaying
       consoleText.parentElement.scrollTop =
         consoleText.parentElement.scrollHeight;
@@ -24,6 +65,23 @@ const renderText = (text) => {
       clearInterval(intervalId);
     }
   }, 10);
+
+  // can tap to skip the text animation
+  consoleText.onclick = () => {
+    if (text && textIndex < text.length) {
+      let html = text.replace(/\/([^/]+?)\//g, "<i>$1</i>");
+
+      html = html.replace(/\n/g, "<br/><br/>");
+      html = html.replace(/\*([^\*]*?)\*/g, "<b>$1</b>");
+      html = html.replace(/_([^_]+?)_/g, "<u>$1</u>");
+      html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+
+      consoleText.innerHTML = html;
+
+      clearInterval(intervalId);
+      textIndex = text.length;
+    }
+  };
 };
 
 const renderChoices = (choices) => {
@@ -94,6 +152,25 @@ const run = async () => {
   }
 };
 
+const sources = [
+  {
+    id: 1,
+    name: "Example 1",
+    url: "https://raw.githubusercontent.com/jasoncabot/fabled-story-book/main/assets/example01/",
+    entrypoint: "entrypoint.jabl",
+  },
+  {
+    id: 2,
+    name: "Example 2",
+    url: "http://localhost:8788/example02/",
+    entrypoint: "0-choose-character.jabl",
+  },
+];
+const availableSources = sources.reduce((acc, source) => {
+  acc[source.id] = source.url;
+  return acc;
+}, {});
+
 const registerGlobals = () => {
   window.bookStorage = {
     getItem: (key) => {
@@ -120,7 +197,10 @@ const registerGlobals = () => {
         localStorage.removeItem(key);
       }
     }
-    localStorage.setItem("system:section", "entrypoint.jabl");
+    const entrypoint = sources.find(
+      (source) => source.id == sourceId
+    )?.entrypoint;
+    localStorage.setItem("system:section", entrypoint);
 
     // And restart the game
     startSelection();
@@ -136,9 +216,7 @@ const registerGlobals = () => {
   };
   window.loadSection = (identifier, callback) => {
     const sourceId = localStorage.getItem("system:source");
-    const sourceURL = {
-      1: "https://raw.githubusercontent.com/jasoncabot/fabled-story-book/main/assets/example01/",
-    }[sourceId];
+    const sourceURL = availableSources[sourceId];
     if (!sourceURL) {
       throw new Error("Invalid source id");
     }
@@ -165,13 +243,15 @@ const startSelection = () => {
 };
 
 const showSelectionChoices = () => {
+  const choices = sources.map(
+    (source) =>
+      `choice("${source.name}", { set("system:source", ${source.id}) goto("${source.entrypoint}")})`
+  );
+
   runJABL(`{
     print("Welcome to the game!")
     print("Which book would you like to play?")
-    choice("Example 1", {
-      set("system:source", 1)
-      goto("entrypoint.jabl")
-    })
+    ${choices.join("\n")}
   }`);
 };
 

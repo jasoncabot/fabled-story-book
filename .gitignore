@@ -25,3 +25,5 @@ bin
 *.wasm
 .wrangler
 node_modules
+
+web/example02

@@ -146,3 +146,7 @@ body {
 .option:hover {
   background-color: #023021;
 }
+
+code {
+  background-color: #033827;
+}
