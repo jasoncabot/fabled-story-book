@@ -86,7 +86,9 @@ jobs:
         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         accountId: 95ffb963e9a7dc68ae10699ffec445b2
         projectName: fabled-story-book
-        directory: ./web
+        directory: .
+        workingDirectory: ./web
+        wranglerVersion: '3'
         gitHubToken: ${{ secrets.GITHUB_TOKEN }}
 
   publish_release:
