@@ -52,7 +52,6 @@ const renderText = (text) => {
           consoleText.innerHTML += `<i>${italicText}</i>`;
           break;
         default:
-          console.log(text.charAt(textIndex));
           consoleText.innerHTML += text.charAt(textIndex);
           break;
       }
