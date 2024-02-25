@@ -80,6 +80,9 @@ jobs:
       with:
         name: wasm
         path: web
+    - name: Install Web Dependencies
+      run: npm ci
+      working-directory: ./web
     - name: Publish Web
       uses: cloudflare/pages-action@v1
       with:
