@@ -157,16 +157,35 @@ const sources = [
     name: "Example 1",
     url: "https://raw.githubusercontent.com/jasoncabot/fabled-story-book/main/assets/example01/",
     entrypoint: "entrypoint.jabl",
+    auth: () => {
+      return Promise.resolve(null);
+    },
   },
   {
     id: 2,
     name: "Example 2",
     url: "http://localhost:8788/example02/",
     entrypoint: "0-choose-character.jabl",
+    auth: () => {
+      return Promise.resolve(localStorage.getItem("example02:token"));
+    },
+  },
+  {
+    id: 3,
+    name: "AI Generated",
+    url: "/",
+    entrypoint: "generate?id=1",
+    auth: () => {
+      return Promise.resolve(localStorage.getItem("system:token"));
+    },
   },
 ];
 const availableSources = sources.reduce((acc, source) => {
   acc[source.id] = source.url;
+  return acc;
+}, {});
+const authFunctions = sources.reduce((acc, source) => {
+  acc[source.id] = source.auth;
   return acc;
 }, {});
 
@@ -219,10 +238,40 @@ const registerGlobals = () => {
     if (!sourceURL) {
       throw new Error("Invalid source id");
     }
-    fetch(sourceURL + identifier)
-      .then((response) => response.text())
-      .then((text) => {
-        callback(text, null);
+
+    // create custom headers to add to the fetch request
+    const authFn = authFunctions[sourceId];
+    authFn()
+      .then((token) => {
+        const headers = new Headers();
+        if (token) {
+          headers.append("Authorization", `Bearer ${token}`);
+        }
+        fetch(`${sourceURL}${identifier}`, {
+          method: "GET",
+          headers: headers,
+        })
+          .then((response) => {
+            if (response.status == 401 || response.status == 403) {
+              throw new Error("Unauthorised");
+            } else if (response.status == 404) {
+              throw new Error("Not found");
+            } else if (!response.ok) {
+              throw new Error("Not ok");
+            } else if (
+              (response.headers.get("content-type") ?? "").includes("text/html")
+            ) {
+              throw new Error("Not a valid jabl file");
+            }
+
+            return response.text();
+          })
+          .then((text) => {
+            callback(text, null);
+          })
+          .catch((err) => {
+            callback(null, `Failed to fetch section ${identifier}: ${err}`);
+          });
       })
       .catch((err) => {
         callback(null, err);

@@ -27,3 +27,4 @@ bin
 node_modules
 
 web/example02
+.dev.vars
