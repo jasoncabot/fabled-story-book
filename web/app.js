@@ -167,14 +167,14 @@ const sources = [
     url: "http://localhost:8788/example02/",
     entrypoint: "0-choose-character.jabl",
     auth: () => {
-      return Promise.resolve(localStorage.getItem("example02:token"));
+      return Promise.resolve(null);
     },
   },
   {
     id: 3,
     name: "AI Generated",
     url: "/",
-    entrypoint: "generate?id=1",
+    entrypoint: "generate",
     auth: () => {
       return Promise.resolve(localStorage.getItem("system:token"));
     },
