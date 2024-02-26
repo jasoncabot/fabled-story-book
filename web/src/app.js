@@ -136,7 +136,7 @@ const run = async () => {
 
   const go = new Go();
   const { instance } = await WebAssembly.instantiateStreaming(
-    fetch("test.wasm"),
+    fetch("jabl.wasm"),
     go.importObject
   );
   go.run(instance);

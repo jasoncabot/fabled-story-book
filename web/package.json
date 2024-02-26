@@ -1,5 +1,11 @@
 {
+  "scripts": {
+    "start": "wrangler pages dev src"
+  },
   "dependencies": {
     "@cloudflare/ai": "^1.0.50"
+  },
+  "devDependencies": {
+    "wrangler": "^3.29.0"
   }
 }

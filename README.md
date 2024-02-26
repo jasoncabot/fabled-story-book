@@ -159,5 +159,13 @@ go build -o bin cmd/cli/main.go
 ## Web
 
 ```sh
-GOOS=js GOARCH=wasm go build -o ./web/test.wasm ./cmd/wasm/main.go
+GOOS=js GOARCH=wasm go build -o ./web/jabl.wasm ./cmd/wasm/main.go
+```
+
+## Web UI
+
+```sh
+cd web
+npm ci
+npm run start
 ```

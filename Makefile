@@ -7,7 +7,7 @@ build:
 
 # Build the wasm file
 wasm:
-	GOOS=js GOARCH=wasm tinygo build -o ./web/test.wasm -target wasm -no-debug ./cmd/wasm/main.go
+	GOOS=js GOARCH=wasm tinygo build -o ./web/src/jabl.wasm -target wasm -no-debug ./cmd/wasm/main.go
 
 # Run tests and generate coverage report
 test:

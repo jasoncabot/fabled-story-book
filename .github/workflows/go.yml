@@ -60,12 +60,12 @@ jobs:
       with:
         tinygo-version: '0.30.0'
     - name: Build WASM
-      run: GOOS=js GOARCH=wasm tinygo build -o ./web/test.wasm -target wasm -no-debug ./cmd/wasm/main.go
+      run: make wasm
     - name: Artifact Upload
       uses: actions/upload-artifact@v4
       with:
         name: wasm
-        path: web/test.wasm
+        path: web/src/jabl.wasm
 
   publish_web:
     runs-on: ubuntu-latest
@@ -79,7 +79,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: wasm
-        path: web
+        path: web/src
     - name: Install Web Dependencies
       run: npm ci
       working-directory: ./web
@@ -89,7 +89,7 @@ jobs:
         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         accountId: 95ffb963e9a7dc68ae10699ffec445b2
         projectName: fabled-story-book
-        directory: .
+        directory: ./src
         workingDirectory: ./web
         wranglerVersion: '3'
         gitHubToken: ${{ secrets.GITHUB_TOKEN }}
