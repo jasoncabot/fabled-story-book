@@ -40,7 +40,7 @@ func (l *jsLoader) LoadSection(identifier jabl.SectionId, onLoaded func(code str
 	cb = js.FuncOf(func(this js.Value, args []js.Value) any {
 		result := args[0].String()
 		err := args[1]
-		if !err.IsNull() {
+		if !err.IsUndefined() {
 			onLoaded("", errors.New(err.String()))
 		} else {
 			onLoaded(result, nil)
@@ -58,13 +58,13 @@ func execSection(this js.Value, inputs []js.Value) any {
 	// The interpreter delegates back to the loader for getting the code to execute from an identifier
 	interpreter.Execute(section, state, func(section *jabl.Result, err error) {
 		if err != nil {
-			callback.Invoke(js.Null(), err.Error())
+			callback.Invoke(js.Undefined(), err.Error())
 		} else {
 			jsonValueOfRes, err := json.Marshal(section)
 			if err != nil {
-				callback.Invoke(js.Null(), err.Error())
+				callback.Invoke(js.Undefined(), err.Error())
 			} else {
-				callback.Invoke(string(jsonValueOfRes), js.Null())
+				callback.Invoke(string(jsonValueOfRes), js.Undefined())
 			}
 		}
 	})
@@ -79,9 +79,9 @@ func evalCode(this js.Value, inputs []js.Value) any {
 	interpreter.Evaluate(inputs[0].String(), state, func(section *jabl.Result, err error) {
 		jsonValueOfRes, err := json.Marshal(section)
 		if err != nil {
-			callback.Invoke(js.Null(), err.Error())
+			callback.Invoke(js.Undefined(), err.Error())
 		} else {
-			callback.Invoke(string(jsonValueOfRes), js.Null())
+			callback.Invoke(string(jsonValueOfRes), js.Undefined())
 		}
 	})
 	return nil
@@ -97,7 +97,7 @@ type localStorageMapper struct{}
 
 func (s *localStorageMapper) Get(key string) (float64, error) {
 	value := js.Global().Get("bookStorage").Call("getItem", key)
-	if value.IsNull() {
+	if value.IsUndefined() {
 		return 0, nil
 	}
 	return strconv.ParseFloat(value.String(), 64)

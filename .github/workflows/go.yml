@@ -83,13 +83,18 @@ jobs:
     - name: Install Web Dependencies
       run: npm ci
       working-directory: ./web
+    - name: Build Web
+      run: |
+        npm run build
+        npm run build:css
+      working-directory: ./web
     - name: Publish Web
       uses: cloudflare/pages-action@v1
       with:
         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         accountId: 95ffb963e9a7dc68ae10699ffec445b2
         projectName: fabled-story-book
-        directory: ./src
+        directory: ./dist
         workingDirectory: ./web
         wranglerVersion: '3'
         gitHubToken: ${{ secrets.GITHUB_TOKEN }}
