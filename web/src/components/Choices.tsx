@@ -10,7 +10,7 @@ const Choices: React.FC<{ choices: Choice[]; onChoiceSelected: (c: Choice) => vo
     return (
       <button
         type="button"
-        className="bg-slate-900 min-h-12 min-w-48 rounded-lg border border-harlequin-700 px-4 py-2 font-mono text-xs font-medium text-harlequin-700 hover:bg-harlequin-900 hover:text-harlequin-400"
+        className="min-h-12 min-w-48 rounded-lg border border-harlequin-700 bg-slate-900 px-4 py-2 font-mono text-xs font-medium text-harlequin-700 hover:bg-harlequin-900 hover:text-harlequin-400"
         onClick={(e) => {
           e.preventDefault();
           onChoiceSelected(choice);
@@ -22,7 +22,7 @@ const Choices: React.FC<{ choices: Choice[]; onChoiceSelected: (c: Choice) => vo
   });
 
   return (
-    <div className="flex inline-flex shrink-0 flex-row space-x-4 overflow-x-auto rounded-md p-4 shadow-sm" role="group">
+    <div className="flex inline-flex shrink-0 flex-row space-x-4 overflow-x-auto rounded-md p-4" role="group">
       {buttons}
     </div>
   );

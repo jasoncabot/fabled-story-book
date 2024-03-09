@@ -73,6 +73,8 @@ const ConsoleText: React.FC<{ text: string }> = ({ text }) => {
   // can tap to skip the text animation
   const finishAnimation = () => {
     if (consoleTextRef.current) {
+      if (intervalId === undefined) return;
+
       const consoleText = consoleTextRef.current;
       clearInterval(intervalId);
       consoleText.innerHTML = "";
@@ -90,7 +92,7 @@ const ConsoleText: React.FC<{ text: string }> = ({ text }) => {
 
   return (
     <div className="flex flex-grow overflow-y-scroll overscroll-contain p-4">
-      <span ref={consoleTextRef} onClick={finishAnimation} className="font-mono text-harlequin-700"></span>;
+      <span ref={consoleTextRef} onClick={finishAnimation} className="font-mono text-harlequin-700"></span>
     </div>
   );
 };

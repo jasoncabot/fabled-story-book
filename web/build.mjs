@@ -43,7 +43,8 @@ await Promise.all([scripts, staticAssets, functions]);
 // Hack to force wrangler pages to rebuild
 const packageJson = readFileSync("package.json", "utf8");
 const pkg = JSON.parse(packageJson);
-pkg.scripts["build:time"] = `echo "${new Date().toISOString()}"`;
+const version = pkg["version"] ?? "0.0.0";
+pkg["version"] = version.replace(/\d+$/, (n) => (parseInt(n) + 1).toString());
 writeFileSync("package.json", JSON.stringify(pkg, null, 2));
 
 console.log("[esbuild] done " + new Date().toLocaleTimeString());

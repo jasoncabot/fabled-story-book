@@ -36,6 +36,15 @@ export const sources: Source[] = [
       return Promise.resolve(localStorage.getItem("system:token") ?? "");
     },
   },
+  {
+    id: "4",
+    name: "War Torn Kingdom",
+    url: "/example-4/",
+    entrypoint: "0-choose-character.jabl",
+    auth: () => {
+      return Promise.resolve(undefined);
+    },
+  },
 ];
 
 export const availableSources = sources.reduce((acc: Record<string, string>, source) => {
