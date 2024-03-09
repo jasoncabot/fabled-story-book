@@ -26,6 +26,6 @@ bin
 .wrangler
 node_modules
 
-web/src/example02
+web/src/example*
 web/dist
 .dev.vars

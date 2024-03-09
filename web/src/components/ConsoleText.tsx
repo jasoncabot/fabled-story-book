@@ -1,69 +1,138 @@
 import React, { useEffect, useRef, useState } from "react";
 
+const addCharacter = (text: string, i: number) => {
+  let startAt = i;
+  switch (text.charAt(i)) {
+    // images are formatted as ![alt text](image link)
+    case "!":
+      if (text.charAt(i + 1) !== "[") {
+        return {
+          count: 1,
+          text: text.charAt(i),
+        };
+      }
+      let imageText = "";
+      i++;
+      while (text.charAt(i) !== "(") {
+        imageText += text.charAt(i);
+        i++;
+      }
+      i++;
+      let imageLink = "";
+      while (text.charAt(i) !== ")") {
+        imageLink += text.charAt(i);
+        i++;
+      }
+      i++;
+      imageText = imageText.substring(1, imageText.length - 1); // strip [ and ]
+      return {
+        count: i - startAt,
+        text: `<img src="${imageLink}" title="${imageText}" alt="${imageText}" class="w-full md:w-1/2 m-auto h-auto" />`,
+      };
+    case "#":
+      i++;
+      while (text.charAt(i) === " ") {
+        i++;
+      }
+      let headerText = "";
+      while (text.charAt(i) !== "\n") {
+        headerText += text.charAt(i);
+        i++;
+      }
+      i++;
+      return {
+        count: i - startAt,
+        text: `<h1 class="text-xl font-bold">${headerText}</h1>`,
+      };
+    case "\n":
+      return {
+        count: 1,
+        text: "<br/><br/>",
+      };
+    case "*":
+      let boldText = "";
+      i++;
+      while (text.charAt(i) !== "*") {
+        boldText += text.charAt(i);
+        i++;
+      }
+      i++;
+      return {
+        count: i - startAt,
+        text: `<b>${boldText}</b>`,
+      };
+    case "_":
+      let underlineText = "";
+      i++;
+      while (text.charAt(i) !== "_") {
+        underlineText += text.charAt(i);
+        i++;
+      }
+      i++;
+      return {
+        count: i - startAt,
+        text: `<u>${underlineText}</u>`,
+      };
+    case "`":
+      let codeText = "";
+      i++;
+      while (text.charAt(i) !== "`") {
+        codeText += text.charAt(i);
+        i++;
+      }
+      i++;
+      return {
+        count: i - startAt,
+        text: `<code>${codeText}</code>`,
+      };
+    case "/":
+      let italicText = "";
+      i++;
+      while (text.charAt(i) !== "/") {
+        italicText += text.charAt(i);
+        i++;
+      }
+      i++;
+      return {
+        count: i - startAt,
+        text: `<i>${italicText}</i>`,
+      };
+    default:
+      return {
+        count: 1,
+        text: text.charAt(i),
+      };
+  }
+};
+
 const ConsoleText: React.FC<{ text: string }> = ({ text }) => {
+  const [charByCharInterval, setCharByCharInterval] = useState<number | undefined>(undefined);
   const consoleTextRef = useRef<HTMLSpanElement>(null);
-  const [intervalId, setIntervalId] = useState<number | undefined>(undefined);
+  const [rendered, setRendered] = useState("");
 
   useEffect(() => {
-    if (consoleTextRef.current) {
+    if (text && consoleTextRef.current) {
       const consoleText = consoleTextRef.current;
-      consoleText.innerHTML = "";
-      let textIndex = 0;
-      const intervalId = setInterval(() => {
-        if (text && textIndex < text.length) {
-          switch (text.charAt(textIndex)) {
-            case "\n":
-              consoleText.innerHTML += "<br/><br/>";
-              break;
-            case "*":
-              let boldText = "";
-              textIndex++;
-              while (text.charAt(textIndex) !== "*") {
-                boldText += text.charAt(textIndex);
-                textIndex++;
-              }
-              consoleText.innerHTML += `<b>${boldText}</b>`;
-              break;
-            case "_":
-              let underlineText = "";
-              textIndex++;
-              while (text.charAt(textIndex) !== "_") {
-                underlineText += text.charAt(textIndex);
-                textIndex++;
-              }
-              consoleText.innerHTML += `<u>${underlineText}</u>`;
-              break;
-            case "`":
-              let codeText = "";
-              textIndex++;
-              while (text.charAt(textIndex) !== "`") {
-                codeText += text.charAt(textIndex);
-                textIndex++;
-              }
-              consoleText.innerHTML += `<code>${codeText}</code>`;
-              break;
-            case "/":
-              let italicText = "";
-              textIndex++;
-              while (text.charAt(textIndex) !== "/") {
-                italicText += text.charAt(textIndex);
-                textIndex++;
-              }
-              consoleText.innerHTML += `<i>${italicText}</i>`;
-              break;
-            default:
-              consoleText.innerHTML += text.charAt(textIndex);
-              break;
-          }
 
-          // scroll consoleText to the bottom of what it is displaying
-          consoleText.parentElement!.scrollTop = consoleText.parentElement!.scrollHeight;
-          textIndex++;
-        } else {
+      consoleText.innerHTML = "";
+      let i = 0;
+      // print character by character with a delay
+      const intervalId = setInterval(() => {
+        const added = addCharacter(text, i);
+        i += added.count;
+
+        consoleText.innerHTML += added.text;
+        // scroll consoleText to the bottom of what it is displaying
+        consoleText.parentElement!.scrollTop = consoleText.parentElement!.scrollHeight;
+
+        if (i >= text.length) {
+          setRendered(text);
           clearInterval(intervalId);
         }
-      }, 10);
-      setIntervalId(intervalId as unknown as number);
+      }, 20);
+
+      setCharByCharInterval(intervalId as unknown as number);
+
       return () => {
         clearInterval(intervalId);
       };
@@ -72,27 +141,29 @@ const ConsoleText: React.FC<{ text: string }> = ({ text }) => {
 
   // can tap to skip the text animation
   const finishAnimation = () => {
-    if (consoleTextRef.current) {
-      if (intervalId === undefined) return;
+    if (consoleTextRef.current && rendered !== text) {
+      clearInterval(charByCharInterval);
+
+      const actualText = text;
 
       const consoleText = consoleTextRef.current;
-      clearInterval(intervalId);
-      consoleText.innerHTML = "";
-      let html = text.replace(/\/([^/]+?)\//g, "<i>$1</i>");
-
-      html = html.replace(/\n/g, "<br/><br/>");
-      html = html.replace(/\*([^\*]*?)\*/g, "<b>$1</b>");
-      html = html.replace(/_([^_]+?)_/g, "<u>$1</u>");
-      html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
-
+      let inc = 1;
+      let html = "";
+      for (let i = 0; i < text.length; i += inc) {
+        const { count, text } = addCharacter(actualText, i);
+        html += text;
+        inc = count;
+      }
       consoleText.innerHTML = html;
+      setRendered(actualText);
+
       consoleText.parentElement!.scrollTop = consoleText.parentElement!.scrollHeight;
     }
   };
 
   return (
     <div className="flex flex-grow overflow-y-scroll overscroll-contain p-4">
-      <span ref={consoleTextRef} onClick={finishAnimation} className="font-mono text-harlequin-700"></span>
+      <span ref={consoleTextRef} onClick={finishAnimation} className="w-full font-mono text-harlequin-700"></span>
     </div>
   );
 };
