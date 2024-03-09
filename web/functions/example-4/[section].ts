@@ -16,7 +16,7 @@ export async function onRequest(context: EventContext<Env, string, Request>) {
     jabl = `{
       print("You've reached a point that doesn't exist!")
       print("This story needs a section with id '${sectionId}'.")
-      choice("Start Again", {goto("entrypoint.jabl")})
+      choice("Start Again", {goto("0-choose-character.jabl")})
       choice("Change Story", { set("system:source", 0) goto("entrypoint.jabl")})
     }`;
   }
