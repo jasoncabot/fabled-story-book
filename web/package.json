@@ -2,10 +2,10 @@
   "name": "fabled-story-book",
   "version": "1.0.0",
   "description": "Create and play adventure stories",
-  "main": "src/index.txs",
+  "main": "src/index.tsx",
   "scripts": {
     "build": "node build.mjs",
-    "build:css": "tailwindcss -i ./src/main.css -o ./dist/app.css",
+    "build:css": "tailwindcss -i ./src/main.css -o ./dist/app.css --minify",
     "watch:css": "tailwindcss -i ./src/main.css -o ./dist/app.css --watch",
     "watch:web": "wrangler pages dev dist --compatibility-date 2024-02-23 --live-reload"
   },

@@ -119,11 +119,9 @@ const ConsoleText: React.FC<{ text: string }> = ({ text }) => {
       // print character by character with a delay
       const intervalId = setInterval(() => {
         const added = addCharacter(text, i);
-        i += added.count;
 
+        i += added.count;
         consoleText.innerHTML += added.text;
-        // scroll consoleText to the bottom of what it is displaying
-        consoleText.parentElement!.scrollTop = consoleText.parentElement!.scrollHeight;
 
         if (i >= text.length) {
           setRendered(text);
@@ -156,8 +154,6 @@ const ConsoleText: React.FC<{ text: string }> = ({ text }) => {
       }
       consoleText.innerHTML = html;
       setRendered(actualText);
-
-      consoleText.parentElement!.scrollTop = consoleText.parentElement!.scrollHeight;
     }
   };
 
