@@ -158,7 +158,7 @@ const ConsoleText: React.FC<{ text: string }> = ({ text }) => {
   };
 
   return (
-    <div className="flex flex-grow overflow-y-scroll overscroll-contain p-4">
+    <div onClick={finishAnimation} className="flex flex-grow overflow-y-scroll overscroll-contain p-4">
       <span ref={consoleTextRef} onClick={finishAnimation} className="w-full font-mono text-harlequin-700"></span>
     </div>
   );
