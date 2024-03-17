@@ -1,5 +1,5 @@
 import { Cog6ToothIcon } from "@heroicons/react/24/outline";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Choices, { Choice } from "./components/Choices";
 import ConsoleText from "./components/ConsoleText";
 import { wasmInterop } from "./jabl";
@@ -66,10 +66,46 @@ const Content: React.FC = () => {
     }
   }, [transitionCount, section, source, evalCode, execSection]);
 
+  const gotoSectionInputRef = useRef<HTMLInputElement>(null);
+  const debug = localStorage.getItem("debug") === "true";
+  const gotoSection = () => {
+    const section = gotoSectionInputRef.current?.value;
+    if (!section) {
+      return;
+    }
+    transition(section);
+    setSettingsHidden(true);
+  };
+
   return (
     <div className="flex h-[100svh] flex-col bg-slate-900">
       <div className="flex flex-shrink flex-row justify-end">
         <ul className={"options absolute mt-8" + (settingsHidden ? " hidden" : "")}>
+          {debug && (
+            <li>
+              <input
+                ref={gotoSectionInputRef}
+                placeholder="Go to section"
+                type="text"
+                name="goto_section"
+                className="mr-1 bg-slate-900 px-4 py-2 font-mono text-harlequin-700"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    gotoSection();
+                  }
+                }}
+              />
+              <button
+                className="bg-slate-800 px-4 py-2 font-mono text-harlequin-700"
+                onClick={() => {
+                  gotoSection();
+                }}
+              >
+                Go
+              </button>
+            </li>
+          )}
+
           <li>
             <a
               href="#"
