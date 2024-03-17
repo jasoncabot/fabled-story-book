@@ -8,7 +8,7 @@ interface Source {
 
 export const defaultEntrypoint = "entrpoint.jabl";
 
-const localServer = "http://localhost:3000";
+const localServer = "";
 
 export const sources: Source[] = [
   {
