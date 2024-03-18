@@ -8,8 +8,6 @@ interface Source {
 
 export const defaultEntrypoint = "entrpoint.jabl";
 
-const localServer = "";
-
 export const sources: Source[] = [
   {
     id: "1",
@@ -23,7 +21,7 @@ export const sources: Source[] = [
   {
     id: "2",
     name: "1. The War-Torn Kingdom",
-    url: `${localServer}/story/1-war-torn-kingdom/`,
+    url: `/story/1-war-torn-kingdom/`,
     entrypoint: "0-choose-character.jabl",
     auth: () => {
       return Promise.resolve(undefined);

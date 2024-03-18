@@ -40,9 +40,12 @@ export const wasmInterop: WasmFunctions = {
   },
   loadSection: async (identifier: string, callback: (code: string | undefined, error: string | undefined) => void) => {
     const sourceId = localStorage.getItem("system:source") ?? "";
-    const sourceURL = availableSources[sourceId];
+    let sourceURL = availableSources[sourceId];
     if (!sourceURL) {
       throw new Error("Invalid source id");
+    }
+    if (!sourceURL.startsWith("https") && localStorage.getItem("debug") === "true") {
+      sourceURL = "http://localhost:3000" + sourceURL;
     }
     // create custom headers to add to the fetch request
     const authFn = authFunctions[sourceId];
