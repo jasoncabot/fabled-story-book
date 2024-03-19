@@ -26,6 +26,10 @@ type seqStmt struct {
 	rest  stmt
 }
 
+type commentStmt struct {
+	comment string
+}
+
 type fnStmt struct {
 	fn    int
 	expr  expr

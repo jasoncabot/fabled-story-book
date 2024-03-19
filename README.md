@@ -119,6 +119,14 @@ All variables are `float64` values.
 get("some-value") # => 123
 ```
 
+## Comments
+
+You can add single-line coments by prefixing a line with `//`.
+
+```jabl
+// This is a comment
+```
+
 # Interpreter
 
 The JABL interpreter is a simple program that reads a story and executes it. It is written in Go and can be run from the command line or compiled to WASM and invoked from Javascript.

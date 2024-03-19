@@ -46,6 +46,7 @@ stmt:
       | IF '(' boolExpr ')' block             { $$ = &ifStmt{cond: $3, block: $5} }
       | IF '(' boolExpr ')' block ELSE block  { $$ = &ifStmt{cond: $3, block: $5, other: $7} }
       | SET '(' strExpr ',' numExpr ')'       { $$ = &fnStmt{fn: SET, expr: $3, expr2: $5} }
+      | '/' '/' STRING                        { $$ = &commentStmt{comment: $3} }
       ;
 
 strExpr:
