@@ -6,15 +6,33 @@ const ConsoleText: React.FC<{ text: string }> = ({ text }) => {
 
   const [fullyRendered, setFullyRendered] = useState(false);
 
+  const addElement = (element: HTMLElement, renderStack: HTMLElement[]) => {
+    let currentNode = renderStack[renderStack.length - 1];
+
+    if (currentNode.nodeName === "P") {
+      const div = document.createElement("div");
+      div.classList.add("mb-4");
+
+      currentNode.appendChild(div);
+      renderStack.push(div);
+
+      currentNode = div;
+    }
+
+    currentNode.appendChild(element);
+    renderStack.push(element);
+  };
+
   const addCharacter = (char: string, renderStack: HTMLElement[]) => {
     let current = renderStack[renderStack.length - 1];
 
     // if the current node is the root paragraph then write this into a span
     if (current.nodeName === "P") {
-      const span = document.createElement("div");
-      current.appendChild(span);
-      renderStack.push(span);
-      current = span;
+      const div = document.createElement("div");
+      div.classList.add("mb-4");
+      current.appendChild(div);
+      renderStack.push(div);
+      current = div;
     }
     current.innerHTML += char;
   };
@@ -35,8 +53,7 @@ const ConsoleText: React.FC<{ text: string }> = ({ text }) => {
           } else {
             const italic = document.createElement("span");
             italic.style.fontStyle = "italic";
-            currentNode.appendChild(italic);
-            renderStack.push(italic);
+            addElement(italic, renderStack);
           }
           break;
         case "*":
@@ -45,8 +62,7 @@ const ConsoleText: React.FC<{ text: string }> = ({ text }) => {
           } else {
             const bold = document.createElement("span");
             bold.style.fontWeight = "bold";
-            currentNode.appendChild(bold);
-            renderStack.push(bold);
+            addElement(bold, renderStack);
           }
           break;
         case "_":
@@ -55,8 +71,7 @@ const ConsoleText: React.FC<{ text: string }> = ({ text }) => {
           } else {
             const underline = document.createElement("span");
             underline.style.textDecoration = "underline";
-            currentNode.appendChild(underline);
-            renderStack.push(underline);
+            addElement(underline, renderStack);
           }
           break;
         case "`":
@@ -65,8 +80,7 @@ const ConsoleText: React.FC<{ text: string }> = ({ text }) => {
           } else {
             const code = document.createElement("code");
             code.classList.add("bg-gray-800", "text-harlequin-500", "p-1");
-            currentNode.appendChild(code);
-            renderStack.push(code);
+            addElement(code, renderStack);
           }
           break;
         case "\n":
@@ -110,7 +124,7 @@ const ConsoleText: React.FC<{ text: string }> = ({ text }) => {
             img.src = imageLink;
             img.title = imageText;
             img.alt = imageText;
-            img.classList.add("w-full", "md:w-1/2", "m-auto", "h-auto");
+            img.classList.add("w-full", "md:w-1/2", "m-auto", "h-auto", "rounded-lg", "shadow-lg", "mb-4");
             currentNode.appendChild(img);
           } else {
             addCharacter(char, renderStack);
