@@ -104,6 +104,42 @@ const ConsoleText: React.FC<{ text: string }> = ({ text }) => {
           currentNode.appendChild(header);
           renderStack.push(header);
           break;
+        case "|":
+          let tableText = "";
+          while (text.charAt(i) == "|") {
+            let j = i;
+            while (text.charAt(j) !== "\n") {
+              tableText += text.charAt(j);
+              j++;
+            }
+            if (text.charAt(j + 1) == "|") {
+              j++;
+            }
+            tableText += "\n";
+            i = j;
+          }
+          tableText = tableText.substring(0, tableText.length - 1);
+
+          console.log("tableText", tableText);
+
+          const rows = tableText.split("\n");
+          const table = document.createElement("table");
+          table.classList.add("w-full", "mb-4", "border-collapse");
+          for (let row of rows) {
+            const tr = document.createElement("tr");
+            const cells = row.split("|").map((cell) => cell.trim());
+            cells.shift();
+            cells.pop();
+            for (let cell of cells) {
+              const td = document.createElement("td");
+              td.classList.add("border", "border-harlequin-500", "px-4", "py-2");
+              td.textContent = cell;
+              tr.appendChild(td);
+            }
+            table.appendChild(tr);
+          }
+          currentNode.appendChild(table);
+          break;
         case "!":
           if (text.charAt(i + 1) === "[") {
             let imageText = "";
