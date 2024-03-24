@@ -148,6 +148,7 @@ const ConsoleText: React.FC<{ text: string }> = ({ text }) => {
   useEffect(() => {
     if (text && consoleTextRef.current) {
       consoleTextRef.current.innerHTML = "";
+      setFullyRendered(false);
       animateCharacter(0, text, [consoleTextRef.current], true);
       return () => {
         if (frame.current) cancelAnimationFrame(frame.current);
@@ -166,7 +167,7 @@ const ConsoleText: React.FC<{ text: string }> = ({ text }) => {
 
   return (
     <div onClick={finishAnimation} className="flex flex-grow overflow-y-scroll overscroll-contain p-4">
-      <p ref={consoleTextRef} onClick={finishAnimation} className="w-full font-mono text-harlequin-700"></p>
+      <p ref={consoleTextRef} className="w-full font-mono text-harlequin-700"></p>
     </div>
   );
 };
