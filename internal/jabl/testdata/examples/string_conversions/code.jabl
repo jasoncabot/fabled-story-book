@@ -9,4 +9,5 @@
     print("a is now " + set("a", get("a") + 10))
     print("a is now " + get("a"))
     print("4d10 is " + set("b", 4d10))
+    print(100d100)
 }

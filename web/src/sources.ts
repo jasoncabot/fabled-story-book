@@ -3,6 +3,7 @@ interface Source {
   name: string;
   url: string;
   entrypoint: string;
+  global?: string;
   auth: () => Promise<string | undefined>;
 }
 
@@ -23,6 +24,7 @@ export const sources: Source[] = [
     name: "1. The War-Torn Kingdom",
     url: `/story/1-war-torn-kingdom/`,
     entrypoint: "0-choose-character.jabl",
+    global: "_global.jabl",
     auth: () => {
       return Promise.resolve(undefined);
     },

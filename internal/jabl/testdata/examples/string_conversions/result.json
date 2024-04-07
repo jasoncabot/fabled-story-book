@@ -1,5 +1,5 @@
 {
-  "output": "you rolled 20\n32 was rolled\n10 + 10 = 20\nfalse is false\ntrue is true\na is 10\na is now 20\na is now 20\n4d10 is 40\n",
+  "output": "you rolled 20\n32 was rolled\n10 + 10 = 20\nfalse is false\ntrue is true\na is 10\na is now 20\na is now 20\n4d10 is 40\n10000\n",
   "choices": null,
   "transition": ""
 }

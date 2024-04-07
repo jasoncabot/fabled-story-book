@@ -41,6 +41,8 @@ stmt_list:
 
 stmt:
         PRINT '(' strExpr ')'                 { $$ = &fnStmt{fn: PRINT, expr: $3} }
+      | PRINT '(' numExpr ')'                 { $$ = &fnStmt{fn: PRINT, expr: $3} }
+      | PRINT '(' boolExpr ')'                 { $$ = &fnStmt{fn: PRINT, expr: $3} }
       | GOTO '(' strExpr ')'                  { $$ = &fnStmt{fn: GOTO, expr: $3} }
       | CHOICE '(' strExpr ',' block ')'      { $$ = &fnStmt{fn: CHOICE, expr: $3, block: $5} }
       | IF '(' boolExpr ')' block             { $$ = &ifStmt{cond: $3, block: $5} }

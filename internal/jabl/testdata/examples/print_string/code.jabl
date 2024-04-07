@@ -4,4 +4,7 @@
     print("hello" + " " + "world")
     print("hello \"world\"")
     print("hello\nworld")
+    set("message", 1)
+    print(get("message"))
+    print(true)
 }

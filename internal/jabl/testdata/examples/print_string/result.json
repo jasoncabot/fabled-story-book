@@ -1,5 +1,5 @@
 {
-  "output": "hello world\nhello world\nhello world\nhello \"world\"\nhello\nworld\n",
+  "output": "hello world\nhello world\nhello world\nhello \"world\"\nhello\nworld\n1\ntrue\n",
   "choices": null,
   "transition": ""
 }

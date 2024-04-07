@@ -120,8 +120,6 @@ const ConsoleText: React.FC<{ text: string }> = ({ text }) => {
           }
           tableText = tableText.substring(0, tableText.length - 1);
 
-          console.log("tableText", tableText);
-
           const rows = tableText.split("\n");
           const table = document.createElement("table");
           table.classList.add("w-full", "mb-4", "border-collapse");

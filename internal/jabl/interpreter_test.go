@@ -64,7 +64,9 @@ func TestInterpreter(t *testing.T) {
 func TestInterpreterError(t *testing.T) {
 	t.Run("when the section loader returns an error, the interpreter should return it", func(t *testing.T) {
 		loadErr := errors.New("failed to load due to some dodgy reason")
-		loader := &testLoader{testErr: loadErr}
+		loader := &testLoader{
+			testErr: loadErr,
+		}
 		interpreter := NewInterpreter(loader)
 
 		state := NewEmptyState()
@@ -90,7 +92,7 @@ func TestInterpreterPrintString(t *testing.T) {
 
 		code := loadFile(t, path)
 		formattedCode := loadFile(t, path+".formatted")
-		lexer := newLexer(strings.NewReader(code))
+		lexer := newLexer(path, strings.NewReader(code))
 		parseResult := yyParse(lexer)
 		require.NoError(t, lexer.err)
 		require.Equal(t, parseResult, 0, "failed to parse code")

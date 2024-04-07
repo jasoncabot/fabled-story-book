@@ -73,10 +73,9 @@ func execSection(this js.Value, inputs []js.Value) any {
 }
 
 func evalCode(this js.Value, inputs []js.Value) any {
-	callback := inputs[1]
+	callback := inputs[2]
 
-	// The interpreter delegates back to the loader for getting the code to execute from an identifier
-	interpreter.Evaluate(inputs[0].String(), state, func(section *jabl.Result, err error) {
+	interpreter.Evaluate(inputs[0].String(), inputs[1].String(), state, func(section *jabl.Result, err error) {
 		jsonValueOfRes, err := json.Marshal(section)
 		if err != nil {
 			callback.Invoke(js.Undefined(), err.Error())

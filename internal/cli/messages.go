@@ -38,7 +38,7 @@ func execChoice(interpreter *jabl.Interpreter, state jabl.State, choice *jabl.Ch
 
 		wg := sync.WaitGroup{}
 		wg.Add(1)
-		interpreter.Evaluate(choice.Code, state, func(res *jabl.Result, err error) {
+		interpreter.Evaluate(choice.Text, choice.Code, state, func(res *jabl.Result, err error) {
 			msg = executeMsg{
 				result: res,
 				err:    err,

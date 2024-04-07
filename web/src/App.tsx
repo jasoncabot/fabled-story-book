@@ -1,4 +1,4 @@
-import { Cog6ToothIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Choices, { Choice } from "./components/Choices";
 import ConsoleText from "./components/ConsoleText";
@@ -25,12 +25,16 @@ const App: React.FC = () => {
 };
 
 const Content: React.FC = () => {
-  const [settingsHidden, setSettingsHidden] = useState(true);
   const { transitionCount, section, source, resetProgress, changeStory, transition } = useContext(GameContext);
   const { execSection, evalCode } = useContext(WasmContext);
+  const [globalChoices, setGlobalChoices] = useState<Choice[]>([]);
 
   const [result, setResult] = useState<Result | undefined>(undefined);
   const [error, setError] = useState<string | undefined>(undefined);
+
+  const settingsMenuRef = useRef<HTMLDivElement>(null);
+  const globalChoicesMenuRef = useRef<HTMLDivElement>(null);
+  const gotoSectionInputRef = useRef<HTMLInputElement>(null);
 
   const update = (result: string | undefined, error: string | undefined) => {
     if (error) {
@@ -54,9 +58,9 @@ const Content: React.FC = () => {
       const entrypoint = sources.find((s) => s.id === source)?.entrypoint || defaultEntrypoint;
       execSection(entrypoint, update);
     } else {
+      setGlobalChoices([]);
       const choices = sources.map((source) => `choice("${source.name}", { set("system:source", ${source.id}) goto("${source.entrypoint}")})`);
-      evalCode(
-        `{
+      evalCode("main",`{
         print("Welcome to the game!")
         print("Which book would you like to play?")
         ${choices.join("\n")}
@@ -66,7 +70,38 @@ const Content: React.FC = () => {
     }
   }, [transitionCount, section, source, evalCode, execSection]);
 
-  const gotoSectionInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const global = sources.find((s) => s.id === source)?.global;
+    if (global) {
+      execSection(global, (result, error) => {
+        if (error) {
+          setError(error);
+        } else if (result) {
+          const parsedResult = JSON.parse(result) as Result;
+          setGlobalChoices(parsedResult.choices);
+        }
+      });
+    }
+  }, [source, execSection]);
+
+  useEffect(() => {
+    const handleMouseDown = (event: MouseEvent) => {
+      const settingsMenu = settingsMenuRef.current;
+      const globalChoicesMenu = globalChoicesMenuRef.current;
+      if (settingsMenu && !settingsMenu.contains(event.target as Node)) {
+        settingsMenuRef.current?.classList.add("hidden");
+      }
+      if (globalChoicesMenu && !globalChoicesMenu.contains(event.target as Node)) {
+        globalChoicesMenuRef.current?.classList.add("hidden");
+      }
+    };
+
+    window.addEventListener("mousedown", handleMouseDown);
+    return () => {
+      window.removeEventListener("mousedown", handleMouseDown);
+    };
+  }, []);
+
   const debug = localStorage.getItem("debug") === "true";
   const gotoSection = () => {
     const section = gotoSectionInputRef.current?.value;
@@ -74,13 +109,28 @@ const Content: React.FC = () => {
       return;
     }
     transition(section);
-    setSettingsHidden(true);
+  };
+
+  const onMenuSelected = (e: any, element: any) => {
+    element.classList.toggle("hidden");
+    e.stopPropagation();
+    e.preventDefault();
   };
 
   return (
     <div className="flex h-[100svh] flex-col bg-slate-900">
-      <div className="flex flex-shrink flex-row justify-end">
-        <ul className={"options absolute mt-8" + (settingsHidden ? " hidden" : "")}>
+      <div className="flex flex-shrink flex-row justify-between">
+        <button className="cursor-pointer" onMouseDown={(e) => onMenuSelected(e, globalChoicesMenuRef.current)}>
+          {globalChoices.length > 0 && <Bars3Icon className="m-2 h-8 w-8 text-harlequin-700" />}
+        </button>
+
+        <button className="cursor-pointer" onMouseDown={(e) => onMenuSelected(e, settingsMenuRef.current)}>
+          <Cog6ToothIcon className="m-2 h-8 w-8 text-harlequin-700" />
+        </button>
+      </div>
+
+      <div ref={settingsMenuRef} className="absolute right-0 top-0 mr-2 mt-12 hidden rounded-lg bg-slate-800 shadow-lg transition-all duration-300 ease-in-out">
+        <ul className="py-2">
           {debug && (
             <li>
               <input
@@ -91,13 +141,15 @@ const Content: React.FC = () => {
                 className="mr-1 bg-slate-900 px-4 py-2 font-mono text-harlequin-700"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
+                    settingsMenuRef.current?.classList.add("hidden");
                     gotoSection();
                   }
                 }}
               />
               <button
-                className="bg-slate-800 px-4 py-2 font-mono text-harlequin-700"
+                className="bg-slate-800 px-4 py-2 font-mono text-harlequin-700 hover:bg-slate-900 hover:text-harlequin-400"
                 onClick={() => {
+                  settingsMenuRef.current?.classList.add("hidden");
                   gotoSection();
                 }}
               >
@@ -110,7 +162,7 @@ const Content: React.FC = () => {
             <a
               href="#"
               onClick={() => {
-                setSettingsHidden(true);
+                settingsMenuRef.current?.classList.add("hidden");
                 resetProgress();
               }}
               className="block bg-slate-800 px-4 py-2 font-mono text-harlequin-700 hover:bg-slate-900 hover:text-harlequin-400"
@@ -122,7 +174,7 @@ const Content: React.FC = () => {
             <a
               href="#"
               onClick={() => {
-                setSettingsHidden(true);
+                settingsMenuRef.current?.classList.add("hidden");
                 changeStory();
               }}
               className="block bg-slate-800 px-4 py-2 font-mono text-harlequin-700 hover:bg-slate-900 hover:text-harlequin-400"
@@ -131,10 +183,25 @@ const Content: React.FC = () => {
             </a>
           </li>
         </ul>
+      </div>
 
-        <button onClick={() => setSettingsHidden(!settingsHidden)}>
-          <Cog6ToothIcon className="m-2 h-8 w-8 text-harlequin-700" />
-        </button>
+      <div ref={globalChoicesMenuRef} className="absolute left-0 top-0 ml-2 mt-12 hidden rounded-lg bg-slate-800 shadow-lg transition-all duration-300 ease-in-out">
+        <ul className="py-2">
+          {globalChoices.map((choice) => (
+            <li>
+              <a
+                href="#"
+                onClick={() => {
+                  globalChoicesMenuRef.current?.classList.add("hidden");
+                  evalCode(choice.text, choice.code, update);
+                }}
+                className="block bg-slate-800 px-4 py-2 font-mono text-harlequin-700 hover:bg-slate-900 hover:text-harlequin-400"
+              >
+                {choice.text}
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
 
       {error && (
@@ -145,7 +212,7 @@ const Content: React.FC = () => {
 
       <ConsoleText text={result?.output || ""}></ConsoleText>
 
-      <Choices choices={result?.choices ?? []} onChoiceSelected={(choice) => evalCode(choice.code, update)} />
+      <Choices choices={result?.choices ?? []} onChoiceSelected={(choice) => evalCode(choice.text, choice.code, update)} />
     </div>
   );
 };
@@ -201,7 +268,7 @@ const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
 interface WasmContextProps {
   execSection: (section: string, callback: (code: string, error: string) => void) => void;
-  evalCode: (code: string, callback: (result: string, error: string) => void) => void;
+  evalCode: (name: string, code: string, callback: (result: string, error: string) => void) => void;
 }
 
 const WasmContext = React.createContext<WasmContextProps>({
@@ -234,9 +301,9 @@ const JablProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     }
   };
 
-  const evalCode = (code: string, callback: (result: string, error: string) => void) => {
+  const evalCode = (name: string, code: string, callback: (result: string, error: string) => void) => {
     if (wasm) {
-      (window as any).evalCode(code, callback);
+      (window as any).evalCode(name, code, callback);
     }
   };
 

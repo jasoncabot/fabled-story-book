@@ -77,13 +77,14 @@ type lexer struct {
 	ast *program
 }
 
-func newLexer(src io.Reader) *lexer {
+func newLexer(name string, src io.Reader) *lexer {
 	var s scanner.Scanner
 	s.Init(src)
 	// Accept tokens with "-"
 	s.IsIdentRune = func(ch rune, i int) bool {
 		return unicode.IsLetter(ch) || unicode.IsDigit(ch) && i > 0 || ch == '-' && i > 0
 	}
+	s.Filename = name
 	return &lexer{
 		s: s,
 	}

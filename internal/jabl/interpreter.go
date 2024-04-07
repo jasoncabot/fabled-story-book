@@ -71,18 +71,18 @@ func (i *Interpreter) Execute(identifier SectionId, state State, callback func(r
 			callback(nil, err)
 			return
 		}
-		i.Evaluate(code, state, callback)
+		i.Evaluate(string(identifier), code, state, callback)
 	})
 }
 
-func (i *Interpreter) Evaluate(code string, state State, callback func(result *Result, err error)) {
+func (i *Interpreter) Evaluate(name string, code string, state State, callback func(result *Result, err error)) {
 	// parse code
 	src := strings.NewReader(code)
 
 	// gimme a good error
 	yyErrorVerbose = true
 
-	lexer := newLexer(src)
+	lexer := newLexer(name, src)
 	parseResult := yyParse(lexer)
 	if lexer.err != nil || parseResult != 0 {
 		callback(nil, fmt.Errorf("error parsing code: %v", lexer.err))
@@ -338,6 +338,16 @@ func (i *Interpreter) evalNum(e expr, state State) (float64, error) {
 	switch t := e.(type) {
 	case float64:
 		return t, nil
+	case bool:
+		if t {
+			return 1, nil
+		}
+		return 0, nil
+	case string:
+		if num, err := strconv.ParseFloat(t, 64); err == nil {
+			return num, nil
+		}
+		return 0, fmt.Errorf("string not convertible to num")
 	case *parenExpr:
 		return i.evalNum(t.expr, state)
 	case *fnStmt:
@@ -447,6 +457,13 @@ func (i *Interpreter) evalStr(e expr, state State) (string, error) {
 	switch t := e.(type) {
 	case string:
 		return t, nil
+	case bool:
+		if t {
+			return "true", nil
+		}
+		return "false", nil
+	case float64:
+		return strconv.FormatFloat(t, 'f', -1, 64), nil
 	case *parenExpr:
 		return i.evalStr(t.expr, state)
 	case *mathExpr:
@@ -500,13 +517,6 @@ func (i *Interpreter) evalStr(e expr, state State) (string, error) {
 			}
 			return "", fmt.Errorf("invalid function token in string: %d", t.fn)
 		}
-	case float64:
-		return strconv.FormatFloat(t, 'f', -1, 64), nil
-	case bool:
-		if t {
-			return "true", nil
-		}
-		return "false", nil
 	default:
 		return "", fmt.Errorf("invalid node type for string")
 	}
