@@ -37,7 +37,7 @@ $ tree
 
 ## Keywords
 
-THere are only a handful of special keywords in JABL.
+There are only a handful of special keywords in JABL.
 
 If something can be achieved without introducing a new keyword, it should be done.
 
@@ -46,7 +46,7 @@ If something can be achieved without introducing a new keyword, it should be don
 - `goto`: Jump to another section
 - `if`: Choose the branch to run based on a condition
 - `set`: Set a variable
-- `get`: Get a variable
+- `get`, `getn`, `getb`: Get a variable (string, number, boolean)
 
 ### print
 
