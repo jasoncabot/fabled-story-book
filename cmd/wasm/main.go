@@ -113,15 +113,13 @@ func (s *localStorageMapper) Get(key string) (any, error) {
 }
 
 func (s *localStorageMapper) Set(key string, value any) error {
-	if key != "system:source" {
-		switch v := value.(type) {
-		case float64:
-			js.Global().Get("bookStorage").Call("setItem", key, "n", strconv.FormatFloat(v, 'f', -1, 64))
-		case string:
-			js.Global().Get("bookStorage").Call("setItem", key, "s", v)
-		case bool:
-			js.Global().Get("bookStorage").Call("setItem", key, "b", strconv.FormatBool(v))
-		}
+	switch v := value.(type) {
+	case float64:
+		js.Global().Get("bookStorage").Call("setItem", key, "n", strconv.FormatFloat(v, 'f', -1, 64))
+	case string:
+		js.Global().Get("bookStorage").Call("setItem", key, "s", v)
+	case bool:
+		js.Global().Get("bookStorage").Call("setItem", key, "b", strconv.FormatBool(v))
 	}
 
 	return nil
