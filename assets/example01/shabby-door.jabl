@@ -1,7 +1,7 @@
 {
     print("You are standing in what looks like an old guards room.")
 
-    if (get("has-oak-door-key") == 1) {
+    if (getn("has-oak-door-key") == 1) {
         print("The mangled remains of a frog are lying on the floor.")
 
         choice("Investigate the frog", {
@@ -10,17 +10,17 @@
         })
     } else {
 
-        if (get("attacked-frog") != 1) {
+        if (getn("attacked-frog") != 1) {
             print("An enormous frog is staring at you from the other side of the room.")
             set("frog-health", 2d6)
             print("The frog looks like it is about to attack you.")
         } else {
-            if (get("frog-health") > 0) {
+            if (getn("frog-health") > 0) {
                 print("The frog looks hurt but makes no move to attack back.")
             }
         }
 
-        if (get("frog-health") <= 0) {
+        if (getn("frog-health") <= 0) {
             print("The mangled remains of a frog are lying on the floor.")
             choice("Search the remains", {
                 print("You find an old-looking key.")
@@ -30,11 +30,11 @@
         } else {
             choice("Attack the frog", {
                 print("You attack the frog.")
-                set("frog-health", get("frog-health") - 1d6)
-                if (get("frog-health") <= 0) {
+                set("frog-health", getn("frog-health") - 1d6)
+                if (getn("frog-health") <= 0) {
                     print("With a loud squishing sound the frog is no more.")
                 } else {
-                    print("You hit the frog. It has " + get("frog-health") + " health left.")
+                    print("You hit the frog. It has " + getn("frog-health") + " health left.")
                 }
                 set("attacked-frog", 1)
                 choice("Ok", {goto("shabby-door.jabl")})

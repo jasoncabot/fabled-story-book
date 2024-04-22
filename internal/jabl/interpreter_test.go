@@ -13,6 +13,51 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestInterpreter_QuickCodeCheck(t *testing.T) {
+	t.Run("should print a single line of output properly", func(t *testing.T) {
+		state := &testState{
+			testValues: map[string]any{},
+		}
+
+		loader := &testLoader{}
+		// use a known seed for generating random numbers in tests to make them deterministic
+		interpreter := NewInterpreter(loader, WithRandomNumberGenerator(&fixedRandom{}))
+		// execute the code in the file
+		code := `{
+			set("string", "1")
+			set("bool", true)
+			set("num", 1)
+			print("str" + get("string"))
+			print("str" + get("bool"))
+			print("str" + get("num"))
+			print(1 + getn("string"))
+			print(1 + getn("bool"))
+			print(1 + getn("num"))
+			print(true && getb("string"))
+			print(true && getb("bool"))
+			print(true && getb("num"))
+		}`
+		interpreter.Evaluate("inline_test", code, state, func(r *Result, err error) {
+			require.Nil(t, err)
+			require.NotNil(t, r)
+			require.NotNil(t, r.Output)
+
+			// split output by newlines
+			output := strings.Split(r.Output, "\n")
+			require.Len(t, output, 10, "expected 10 lines of output")
+			assert.Equal(t, "str1", output[0], "string")
+			assert.Equal(t, "strtrue", output[1], "bool")
+			assert.Equal(t, "str1", output[2], "num")
+			assert.Equal(t, "2", output[3], "string")
+			assert.Equal(t, "2", output[4], "bool")
+			assert.Equal(t, "2", output[5], "num")
+			assert.Equal(t, "true", output[6], "string")
+			assert.Equal(t, "true", output[7], "bool")
+			assert.Equal(t, "true", output[8], "num")
+		})
+	})
+}
+
 func TestInterpreter(t *testing.T) {
 
 	loader := &testLoader{}
@@ -38,10 +83,10 @@ func TestInterpreter(t *testing.T) {
 				assert.Nil(t, err)
 				assert.NotNil(t, r)
 
-				// marshal result as JSON string and compare to the contents of the file print_string.json
+				// marshal result as JSON string and compare to the contents of the file `result.json`
 				resultAsJSON, err := json.Marshal(r)
 				assert.Nil(t, err)
-				// load file print_string.json
+				// load file result.json
 				expectedResult := loadFile(t, filepath.Join("testdata", "examples", name, "result.json"))
 
 				assert.JSONEq(t, expectedResult, string(resultAsJSON))
@@ -50,7 +95,7 @@ func TestInterpreter(t *testing.T) {
 				stateAsJSON, err := json.Marshal(state.testValues)
 				require.NoError(t, err)
 
-				// load file .state.2
+				// load file `state_after.json`
 				expectedState := loadFile(t, filepath.Join("testdata", "examples", name, "state_after.json"))
 				assert.JSONEq(t, expectedState, string(stateAsJSON))
 			})
@@ -148,17 +193,17 @@ func (t *testLoader) LoadSection(identifier SectionId, onLoad func(code string, 
 }
 
 type testState struct {
-	testValues map[string]float64
+	testValues map[string]any
 }
 
 func NewEmptyState() *testState {
 	return &testState{
-		testValues: map[string]float64{},
+		testValues: map[string]any{},
 	}
 }
 
 func NewTestState(before string) (*testState, error) {
-	initialState := map[string]float64{}
+	initialState := map[string]any{}
 	file, err := os.Open(before)
 	if err == nil {
 		defer file.Close()
@@ -174,14 +219,14 @@ func NewTestState(before string) (*testState, error) {
 	}, nil
 }
 
-func (t *testState) Get(key string) (float64, error) {
+func (t *testState) Get(key string) (any, error) {
 	if value, ok := t.testValues[key]; ok {
 		return value, nil
 	}
 	return 0, nil
 }
 
-func (t *testState) Set(key string, value float64) error {
+func (t *testState) Set(key string, value any) error {
 	t.testValues[key] = value
 	return nil
 }

@@ -2,27 +2,45 @@ import { authFunctions, availableSources } from "./sources";
 
 export type WasmFunctions = {
   bookStorage: {
-    getItem: (key: string) => string | undefined;
-    setItem: (key: string, value: string | undefined) => void;
+    getItem: (key: string) => string | number | boolean | undefined;
+    setItem: (key: string, type: string, value: string | undefined) => void;
     clearCurrent: () => void;
   };
   loadSection: (identifier: string, callback: (code: string | undefined, error: string | undefined) => void) => void;
 };
 
+const keyPrefix = () => {
+  const sourceId = localStorage.getItem("system:source");
+  return sourceId ? `fsb:${sourceId}:` : "";
+};
+
 export const wasmInterop: WasmFunctions = {
   bookStorage: {
     getItem: (key: string) => {
-      const sourceId = localStorage.getItem("system:source");
-      const prefix = sourceId && key != "system:source" ? `fsb:${sourceId}:` : "";
-      return localStorage.getItem(prefix + key) ?? undefined;
+      const prefix = key != "system:source" ? keyPrefix() : "";
+      const val = localStorage.getItem(prefix + key) ?? undefined;
+      if (key === "system:source" || key === "section") {
+        return val;
+      }
+
+      const type = val?.charAt(0);
+      const actualValue = val?.slice(1);
+      if (type == "n") {
+        return actualValue ? Number(actualValue) : undefined;
+      } else if (type == "s") {
+        return actualValue;
+      } else if (type == "b") {
+        return actualValue == "true";
+      }
+      return undefined;
     },
-    setItem: (key: string, value: string | undefined) => {
-      const sourceId = localStorage.getItem("system:source");
-      const prefix = sourceId && key != "system:source" ? `fsb:${sourceId}:` : "";
+    setItem: (key: string, type: string, value: string | undefined) => {
+      const prefix = key != "system:source" ? keyPrefix() : "";
+      const typePrefix = key === "system:source" || key === "section" ? "" : type;
       if (!value) {
         localStorage.removeItem(prefix + key);
       } else {
-        localStorage.setItem(prefix + key, value);
+        localStorage.setItem(prefix + key, typePrefix + value);
       }
     },
     clearCurrent: () => {

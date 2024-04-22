@@ -1,7 +1,7 @@
 {
     print("You are standing in a grand hallway. There is a giant oak door to one end.")
     choice("Open the door", {
-        if (get("has-oak-door-key") == 1) {
+        if (getn("has-oak-door-key") == 1) {
             goto("ending.jabl")
         } else {
             print("It's locked, you need a key.")

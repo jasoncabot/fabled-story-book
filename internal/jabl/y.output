@@ -88,7 +88,9 @@ state 9
 
 
 state 10
+	stmt:  SET.'(' strExpr ',' strExpr ')' 
 	stmt:  SET.'(' strExpr ',' numExpr ')' 
+	stmt:  SET.'(' strExpr ',' boolExpr ')' 
 
 	'('  shift 18
 	.  error
@@ -118,98 +120,110 @@ state 14
 	stmt:  PRINT '('.numExpr ')' 
 	stmt:  PRINT '('.boolExpr ')' 
 
-	GET  shift 28
-	SET  shift 27
-	CMP_NOT  shift 30
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
 	STRING  shift 23
-	NUMBER  shift 25
-	DICE  shift 31
-	BOOLEAN  shift 29
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
 	'('  shift 24
 	.  error
 
 	strExpr  goto 20
 	boolExpr  goto 22
 	numExpr  goto 21
-	rollExpr  goto 26
+	rollExpr  goto 28
 
 state 15
 	stmt:  GOTO '('.strExpr ')' 
 
-	GET  shift 28
-	SET  shift 27
-	CMP_NOT  shift 30
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
 	STRING  shift 23
-	NUMBER  shift 25
-	DICE  shift 31
-	BOOLEAN  shift 29
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
 	'('  shift 24
 	.  error
 
-	strExpr  goto 32
-	boolExpr  goto 34
-	numExpr  goto 33
-	rollExpr  goto 26
+	strExpr  goto 34
+	boolExpr  goto 36
+	numExpr  goto 35
+	rollExpr  goto 28
 
 state 16
 	stmt:  CHOICE '('.strExpr ',' block ')' 
 
-	GET  shift 28
-	SET  shift 27
-	CMP_NOT  shift 30
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
 	STRING  shift 23
-	NUMBER  shift 25
-	DICE  shift 31
-	BOOLEAN  shift 29
-	'('  shift 24
-	.  error
-
-	strExpr  goto 35
-	boolExpr  goto 34
-	numExpr  goto 33
-	rollExpr  goto 26
-
-state 17
-	stmt:  IF '('.boolExpr ')' block 
-	stmt:  IF '('.boolExpr ')' block ELSE block 
-
-	GET  shift 28
-	SET  shift 27
-	CMP_NOT  shift 30
-	STRING  shift 23
-	NUMBER  shift 25
-	DICE  shift 31
-	BOOLEAN  shift 29
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
 	'('  shift 24
 	.  error
 
 	strExpr  goto 37
 	boolExpr  goto 36
-	numExpr  goto 33
-	rollExpr  goto 26
+	numExpr  goto 35
+	rollExpr  goto 28
 
-state 18
-	stmt:  SET '('.strExpr ',' numExpr ')' 
+state 17
+	stmt:  IF '('.boolExpr ')' block 
+	stmt:  IF '('.boolExpr ')' block ELSE block 
 
-	GET  shift 28
-	SET  shift 27
-	CMP_NOT  shift 30
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
 	STRING  shift 23
-	NUMBER  shift 25
-	DICE  shift 31
-	BOOLEAN  shift 29
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
 	'('  shift 24
 	.  error
 
-	strExpr  goto 38
-	boolExpr  goto 34
-	numExpr  goto 33
-	rollExpr  goto 26
+	strExpr  goto 39
+	boolExpr  goto 38
+	numExpr  goto 35
+	rollExpr  goto 28
+
+state 18
+	stmt:  SET '('.strExpr ',' strExpr ')' 
+	stmt:  SET '('.strExpr ',' numExpr ')' 
+	stmt:  SET '('.strExpr ',' boolExpr ')' 
+
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
+	STRING  shift 23
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
+	'('  shift 24
+	.  error
+
+	strExpr  goto 40
+	boolExpr  goto 36
+	numExpr  goto 35
+	rollExpr  goto 28
 
 state 19
 	stmt:  '/' '/'.STRING 
 
-	STRING  shift 39
+	STRING  shift 41
 	.  error
 
 
@@ -221,10 +235,10 @@ state 20
 	boolExpr:  strExpr.CMP_EQ strExpr 
 	boolExpr:  strExpr.CMP_NEQ strExpr 
 
-	CMP_EQ  shift 42
-	CMP_NEQ  shift 43
-	'+'  shift 41
-	')'  shift 40
+	CMP_EQ  shift 44
+	CMP_NEQ  shift 45
+	'+'  shift 43
+	')'  shift 42
 	.  error
 
 
@@ -242,17 +256,17 @@ state 21
 	numExpr:  numExpr.'*' numExpr 
 	numExpr:  numExpr.'/' numExpr 
 
-	CMP_LT  shift 46
-	CMP_GT  shift 47
-	CMP_LTE  shift 48
-	CMP_GTE  shift 49
-	CMP_EQ  shift 50
-	CMP_NEQ  shift 51
-	'+'  shift 45
-	'-'  shift 52
-	'*'  shift 53
-	'/'  shift 54
-	')'  shift 44
+	CMP_LT  shift 48
+	CMP_GT  shift 49
+	CMP_LTE  shift 50
+	CMP_GTE  shift 51
+	CMP_EQ  shift 52
+	CMP_NEQ  shift 53
+	'+'  shift 47
+	'-'  shift 54
+	'*'  shift 55
+	'/'  shift 56
+	')'  shift 46
 	.  error
 
 
@@ -264,19 +278,19 @@ state 22
 	boolExpr:  boolExpr.CMP_EQ boolExpr 
 	boolExpr:  boolExpr.CMP_NEQ boolExpr 
 
-	CMP_EQ  shift 59
-	CMP_NEQ  shift 60
-	CMP_AND  shift 57
-	CMP_OR  shift 58
-	'+'  shift 56
-	')'  shift 55
+	CMP_EQ  shift 61
+	CMP_NEQ  shift 62
+	CMP_AND  shift 59
+	CMP_OR  shift 60
+	'+'  shift 58
+	')'  shift 57
 	.  error
 
 
 state 23
-	strExpr:  STRING.    (14)
+	strExpr:  STRING.    (16)
 
-	.  reduce 14 (src line 54)
+	.  reduce 16 (src line 56)
 
 
 state 24
@@ -284,80 +298,100 @@ state 24
 	boolExpr:  '('.boolExpr ')' 
 	numExpr:  '('.numExpr ')' 
 
-	GET  shift 28
-	SET  shift 27
-	CMP_NOT  shift 30
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
 	STRING  shift 23
-	NUMBER  shift 25
-	DICE  shift 31
-	BOOLEAN  shift 29
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
 	'('  shift 24
 	.  error
 
-	strExpr  goto 61
-	boolExpr  goto 62
-	numExpr  goto 63
-	rollExpr  goto 26
+	strExpr  goto 63
+	boolExpr  goto 64
+	numExpr  goto 65
+	rollExpr  goto 28
 
 state 25
-	numExpr:  NUMBER.    (36)
-	rollExpr:  NUMBER.DICE 
-
-	DICE  shift 64
-	.  reduce 36 (src line 82)
-
-
-state 26
-	numExpr:  rollExpr.    (37)
-
-	.  reduce 37 (src line 84)
-
-
-state 27
-	numExpr:  SET.'(' strExpr ',' numExpr ')' 
-
-	'('  shift 65
-	.  error
-
-
-state 28
-	numExpr:  GET.'(' strExpr ')' 
+	strExpr:  GET.'(' strExpr ')' 
 
 	'('  shift 66
 	.  error
 
 
-state 29
-	boolExpr:  BOOLEAN.    (21)
+state 26
+	strExpr:  SET.'(' strExpr ',' strExpr ')' 
+	boolExpr:  SET.'(' strExpr ',' boolExpr ')' 
+	numExpr:  SET.'(' strExpr ',' numExpr ')' 
 
-	.  reduce 21 (src line 64)
+	'('  shift 67
+	.  error
+
+
+state 27
+	numExpr:  NUMBER.    (42)
+	rollExpr:  NUMBER.DICE 
+
+	DICE  shift 68
+	.  reduce 42 (src line 88)
+
+
+state 28
+	numExpr:  rollExpr.    (43)
+
+	.  reduce 43 (src line 90)
+
+
+state 29
+	numExpr:  GETN.'(' strExpr ')' 
+
+	'('  shift 69
+	.  error
 
 
 state 30
+	boolExpr:  BOOLEAN.    (25)
+
+	.  reduce 25 (src line 68)
+
+
+state 31
 	boolExpr:  CMP_NOT.boolExpr 
 
-	GET  shift 28
-	SET  shift 27
-	CMP_NOT  shift 30
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
 	STRING  shift 23
-	NUMBER  shift 25
-	DICE  shift 31
-	BOOLEAN  shift 29
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
 	'('  shift 24
 	.  error
 
-	strExpr  goto 37
-	boolExpr  goto 67
-	numExpr  goto 33
-	rollExpr  goto 26
-
-state 31
-	rollExpr:  DICE.    (45)
-
-	.  reduce 45 (src line 94)
-
+	strExpr  goto 39
+	boolExpr  goto 70
+	numExpr  goto 35
+	rollExpr  goto 28
 
 state 32
+	boolExpr:  GETB.'(' strExpr ')' 
+
+	'('  shift 71
+	.  error
+
+
+state 33
+	rollExpr:  DICE.    (51)
+
+	.  reduce 51 (src line 100)
+
+
+state 34
 	stmt:  GOTO '(' strExpr.')' 
 	strExpr:  strExpr.'+' strExpr 
 	strExpr:  strExpr.'+' numExpr 
@@ -365,14 +399,14 @@ state 32
 	boolExpr:  strExpr.CMP_EQ strExpr 
 	boolExpr:  strExpr.CMP_NEQ strExpr 
 
-	CMP_EQ  shift 42
-	CMP_NEQ  shift 43
-	'+'  shift 41
-	')'  shift 68
+	CMP_EQ  shift 44
+	CMP_NEQ  shift 45
+	'+'  shift 43
+	')'  shift 72
 	.  error
 
 
-state 33
+state 35
 	strExpr:  numExpr.'+' strExpr 
 	boolExpr:  numExpr.CMP_LT numExpr 
 	boolExpr:  numExpr.CMP_GT numExpr 
@@ -385,35 +419,35 @@ state 33
 	numExpr:  numExpr.'*' numExpr 
 	numExpr:  numExpr.'/' numExpr 
 
-	CMP_LT  shift 46
-	CMP_GT  shift 47
-	CMP_LTE  shift 48
-	CMP_GTE  shift 49
-	CMP_EQ  shift 50
-	CMP_NEQ  shift 51
-	'+'  shift 45
-	'-'  shift 52
-	'*'  shift 53
-	'/'  shift 54
+	CMP_LT  shift 48
+	CMP_GT  shift 49
+	CMP_LTE  shift 50
+	CMP_GTE  shift 51
+	CMP_EQ  shift 52
+	CMP_NEQ  shift 53
+	'+'  shift 47
+	'-'  shift 54
+	'*'  shift 55
+	'/'  shift 56
 	.  error
 
 
-state 34
+state 36
 	strExpr:  boolExpr.'+' strExpr 
 	boolExpr:  boolExpr.CMP_AND boolExpr 
 	boolExpr:  boolExpr.CMP_OR boolExpr 
 	boolExpr:  boolExpr.CMP_EQ boolExpr 
 	boolExpr:  boolExpr.CMP_NEQ boolExpr 
 
-	CMP_EQ  shift 59
-	CMP_NEQ  shift 60
-	CMP_AND  shift 57
-	CMP_OR  shift 58
-	'+'  shift 56
+	CMP_EQ  shift 61
+	CMP_NEQ  shift 62
+	CMP_AND  shift 59
+	CMP_OR  shift 60
+	'+'  shift 58
 	.  error
 
 
-state 35
+state 37
 	stmt:  CHOICE '(' strExpr.',' block ')' 
 	strExpr:  strExpr.'+' strExpr 
 	strExpr:  strExpr.'+' numExpr 
@@ -421,14 +455,14 @@ state 35
 	boolExpr:  strExpr.CMP_EQ strExpr 
 	boolExpr:  strExpr.CMP_NEQ strExpr 
 
-	CMP_EQ  shift 42
-	CMP_NEQ  shift 43
-	'+'  shift 41
-	','  shift 69
+	CMP_EQ  shift 44
+	CMP_NEQ  shift 45
+	'+'  shift 43
+	','  shift 73
 	.  error
 
 
-state 36
+state 38
 	stmt:  IF '(' boolExpr.')' block 
 	stmt:  IF '(' boolExpr.')' block ELSE block 
 	strExpr:  boolExpr.'+' strExpr 
@@ -437,350 +471,370 @@ state 36
 	boolExpr:  boolExpr.CMP_EQ boolExpr 
 	boolExpr:  boolExpr.CMP_NEQ boolExpr 
 
-	CMP_EQ  shift 59
-	CMP_NEQ  shift 60
-	CMP_AND  shift 57
-	CMP_OR  shift 58
-	'+'  shift 56
-	')'  shift 70
-	.  error
-
-
-state 37
-	strExpr:  strExpr.'+' strExpr 
-	strExpr:  strExpr.'+' numExpr 
-	strExpr:  strExpr.'+' boolExpr 
-	boolExpr:  strExpr.CMP_EQ strExpr 
-	boolExpr:  strExpr.CMP_NEQ strExpr 
-
-	CMP_EQ  shift 42
-	CMP_NEQ  shift 43
-	'+'  shift 41
-	.  error
-
-
-state 38
-	stmt:  SET '(' strExpr.',' numExpr ')' 
-	strExpr:  strExpr.'+' strExpr 
-	strExpr:  strExpr.'+' numExpr 
-	strExpr:  strExpr.'+' boolExpr 
-	boolExpr:  strExpr.CMP_EQ strExpr 
-	boolExpr:  strExpr.CMP_NEQ strExpr 
-
-	CMP_EQ  shift 42
-	CMP_NEQ  shift 43
-	'+'  shift 41
-	','  shift 71
+	CMP_EQ  shift 61
+	CMP_NEQ  shift 62
+	CMP_AND  shift 59
+	CMP_OR  shift 60
+	'+'  shift 58
+	')'  shift 74
 	.  error
 
 
 state 39
-	stmt:  '/' '/' STRING.    (13)
+	strExpr:  strExpr.'+' strExpr 
+	strExpr:  strExpr.'+' numExpr 
+	strExpr:  strExpr.'+' boolExpr 
+	boolExpr:  strExpr.CMP_EQ strExpr 
+	boolExpr:  strExpr.CMP_NEQ strExpr 
 
-	.  reduce 13 (src line 51)
+	CMP_EQ  shift 44
+	CMP_NEQ  shift 45
+	'+'  shift 43
+	.  error
 
 
 state 40
+	stmt:  SET '(' strExpr.',' strExpr ')' 
+	stmt:  SET '(' strExpr.',' numExpr ')' 
+	stmt:  SET '(' strExpr.',' boolExpr ')' 
+	strExpr:  strExpr.'+' strExpr 
+	strExpr:  strExpr.'+' numExpr 
+	strExpr:  strExpr.'+' boolExpr 
+	boolExpr:  strExpr.CMP_EQ strExpr 
+	boolExpr:  strExpr.CMP_NEQ strExpr 
+
+	CMP_EQ  shift 44
+	CMP_NEQ  shift 45
+	'+'  shift 43
+	','  shift 75
+	.  error
+
+
+state 41
+	stmt:  '/' '/' STRING.    (15)
+
+	.  reduce 15 (src line 53)
+
+
+state 42
 	stmt:  PRINT '(' strExpr ')'.    (5)
 
 	.  reduce 5 (src line 42)
 
 
-state 41
+state 43
 	strExpr:  strExpr '+'.strExpr 
 	strExpr:  strExpr '+'.numExpr 
 	strExpr:  strExpr '+'.boolExpr 
 
-	GET  shift 28
-	SET  shift 27
-	CMP_NOT  shift 30
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
 	STRING  shift 23
-	NUMBER  shift 25
-	DICE  shift 31
-	BOOLEAN  shift 29
-	'('  shift 24
-	.  error
-
-	strExpr  goto 72
-	boolExpr  goto 74
-	numExpr  goto 73
-	rollExpr  goto 26
-
-state 42
-	boolExpr:  strExpr CMP_EQ.strExpr 
-
-	GET  shift 28
-	SET  shift 27
-	CMP_NOT  shift 30
-	STRING  shift 23
-	NUMBER  shift 25
-	DICE  shift 31
-	BOOLEAN  shift 29
-	'('  shift 24
-	.  error
-
-	strExpr  goto 75
-	boolExpr  goto 34
-	numExpr  goto 33
-	rollExpr  goto 26
-
-state 43
-	boolExpr:  strExpr CMP_NEQ.strExpr 
-
-	GET  shift 28
-	SET  shift 27
-	CMP_NOT  shift 30
-	STRING  shift 23
-	NUMBER  shift 25
-	DICE  shift 31
-	BOOLEAN  shift 29
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
 	'('  shift 24
 	.  error
 
 	strExpr  goto 76
-	boolExpr  goto 34
-	numExpr  goto 33
-	rollExpr  goto 26
+	boolExpr  goto 78
+	numExpr  goto 77
+	rollExpr  goto 28
 
 state 44
+	boolExpr:  strExpr CMP_EQ.strExpr 
+
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
+	STRING  shift 23
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
+	'('  shift 24
+	.  error
+
+	strExpr  goto 79
+	boolExpr  goto 36
+	numExpr  goto 35
+	rollExpr  goto 28
+
+state 45
+	boolExpr:  strExpr CMP_NEQ.strExpr 
+
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
+	STRING  shift 23
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
+	'('  shift 24
+	.  error
+
+	strExpr  goto 80
+	boolExpr  goto 36
+	numExpr  goto 35
+	rollExpr  goto 28
+
+state 46
 	stmt:  PRINT '(' numExpr ')'.    (6)
 
 	.  reduce 6 (src line 44)
 
 
-state 45
+state 47
 	strExpr:  numExpr '+'.strExpr 
 	numExpr:  numExpr '+'.numExpr 
 
-	GET  shift 28
-	SET  shift 27
-	CMP_NOT  shift 30
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
 	STRING  shift 23
-	NUMBER  shift 25
-	DICE  shift 31
-	BOOLEAN  shift 29
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
 	'('  shift 24
 	.  error
 
-	strExpr  goto 77
-	boolExpr  goto 34
-	numExpr  goto 78
-	rollExpr  goto 26
-
-state 46
-	boolExpr:  numExpr CMP_LT.numExpr 
-
-	GET  shift 28
-	SET  shift 27
-	NUMBER  shift 25
-	DICE  shift 31
-	'('  shift 80
-	.  error
-
-	numExpr  goto 79
-	rollExpr  goto 26
-
-state 47
-	boolExpr:  numExpr CMP_GT.numExpr 
-
-	GET  shift 28
-	SET  shift 27
-	NUMBER  shift 25
-	DICE  shift 31
-	'('  shift 80
-	.  error
-
-	numExpr  goto 81
-	rollExpr  goto 26
+	strExpr  goto 81
+	boolExpr  goto 36
+	numExpr  goto 82
+	rollExpr  goto 28
 
 state 48
-	boolExpr:  numExpr CMP_LTE.numExpr 
+	boolExpr:  numExpr CMP_LT.numExpr 
 
-	GET  shift 28
-	SET  shift 27
-	NUMBER  shift 25
-	DICE  shift 31
-	'('  shift 80
-	.  error
-
-	numExpr  goto 82
-	rollExpr  goto 26
-
-state 49
-	boolExpr:  numExpr CMP_GTE.numExpr 
-
-	GET  shift 28
-	SET  shift 27
-	NUMBER  shift 25
-	DICE  shift 31
-	'('  shift 80
+	GETN  shift 29
+	SET  shift 85
+	NUMBER  shift 27
+	DICE  shift 33
+	'('  shift 84
 	.  error
 
 	numExpr  goto 83
-	rollExpr  goto 26
+	rollExpr  goto 28
 
-state 50
-	boolExpr:  numExpr CMP_EQ.numExpr 
+state 49
+	boolExpr:  numExpr CMP_GT.numExpr 
 
-	GET  shift 28
-	SET  shift 27
-	NUMBER  shift 25
-	DICE  shift 31
-	'('  shift 80
-	.  error
-
-	numExpr  goto 84
-	rollExpr  goto 26
-
-state 51
-	boolExpr:  numExpr CMP_NEQ.numExpr 
-
-	GET  shift 28
-	SET  shift 27
-	NUMBER  shift 25
-	DICE  shift 31
-	'('  shift 80
-	.  error
-
-	numExpr  goto 85
-	rollExpr  goto 26
-
-state 52
-	numExpr:  numExpr '-'.numExpr 
-
-	GET  shift 28
-	SET  shift 27
-	NUMBER  shift 25
-	DICE  shift 31
-	'('  shift 80
+	GETN  shift 29
+	SET  shift 85
+	NUMBER  shift 27
+	DICE  shift 33
+	'('  shift 84
 	.  error
 
 	numExpr  goto 86
-	rollExpr  goto 26
+	rollExpr  goto 28
 
-state 53
-	numExpr:  numExpr '*'.numExpr 
+state 50
+	boolExpr:  numExpr CMP_LTE.numExpr 
 
-	GET  shift 28
-	SET  shift 27
-	NUMBER  shift 25
-	DICE  shift 31
-	'('  shift 80
+	GETN  shift 29
+	SET  shift 85
+	NUMBER  shift 27
+	DICE  shift 33
+	'('  shift 84
 	.  error
 
 	numExpr  goto 87
-	rollExpr  goto 26
+	rollExpr  goto 28
 
-state 54
-	numExpr:  numExpr '/'.numExpr 
+state 51
+	boolExpr:  numExpr CMP_GTE.numExpr 
 
-	GET  shift 28
-	SET  shift 27
-	NUMBER  shift 25
-	DICE  shift 31
-	'('  shift 80
+	GETN  shift 29
+	SET  shift 85
+	NUMBER  shift 27
+	DICE  shift 33
+	'('  shift 84
 	.  error
 
 	numExpr  goto 88
-	rollExpr  goto 26
+	rollExpr  goto 28
+
+state 52
+	boolExpr:  numExpr CMP_EQ.numExpr 
+
+	GETN  shift 29
+	SET  shift 85
+	NUMBER  shift 27
+	DICE  shift 33
+	'('  shift 84
+	.  error
+
+	numExpr  goto 89
+	rollExpr  goto 28
+
+state 53
+	boolExpr:  numExpr CMP_NEQ.numExpr 
+
+	GETN  shift 29
+	SET  shift 85
+	NUMBER  shift 27
+	DICE  shift 33
+	'('  shift 84
+	.  error
+
+	numExpr  goto 90
+	rollExpr  goto 28
+
+state 54
+	numExpr:  numExpr '-'.numExpr 
+
+	GETN  shift 29
+	SET  shift 85
+	NUMBER  shift 27
+	DICE  shift 33
+	'('  shift 84
+	.  error
+
+	numExpr  goto 91
+	rollExpr  goto 28
 
 state 55
+	numExpr:  numExpr '*'.numExpr 
+
+	GETN  shift 29
+	SET  shift 85
+	NUMBER  shift 27
+	DICE  shift 33
+	'('  shift 84
+	.  error
+
+	numExpr  goto 92
+	rollExpr  goto 28
+
+state 56
+	numExpr:  numExpr '/'.numExpr 
+
+	GETN  shift 29
+	SET  shift 85
+	NUMBER  shift 27
+	DICE  shift 33
+	'('  shift 84
+	.  error
+
+	numExpr  goto 93
+	rollExpr  goto 28
+
+state 57
 	stmt:  PRINT '(' boolExpr ')'.    (7)
 
 	.  reduce 7 (src line 45)
 
 
-state 56
+state 58
 	strExpr:  boolExpr '+'.strExpr 
 
-	GET  shift 28
-	SET  shift 27
-	CMP_NOT  shift 30
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
 	STRING  shift 23
-	NUMBER  shift 25
-	DICE  shift 31
-	BOOLEAN  shift 29
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
 	'('  shift 24
 	.  error
 
-	strExpr  goto 89
-	boolExpr  goto 34
-	numExpr  goto 33
-	rollExpr  goto 26
-
-state 57
-	boolExpr:  boolExpr CMP_AND.boolExpr 
-
-	GET  shift 28
-	SET  shift 27
-	CMP_NOT  shift 30
-	STRING  shift 23
-	NUMBER  shift 25
-	DICE  shift 31
-	BOOLEAN  shift 29
-	'('  shift 24
-	.  error
-
-	strExpr  goto 37
-	boolExpr  goto 90
-	numExpr  goto 33
-	rollExpr  goto 26
-
-state 58
-	boolExpr:  boolExpr CMP_OR.boolExpr 
-
-	GET  shift 28
-	SET  shift 27
-	CMP_NOT  shift 30
-	STRING  shift 23
-	NUMBER  shift 25
-	DICE  shift 31
-	BOOLEAN  shift 29
-	'('  shift 24
-	.  error
-
-	strExpr  goto 37
-	boolExpr  goto 91
-	numExpr  goto 33
-	rollExpr  goto 26
+	strExpr  goto 94
+	boolExpr  goto 36
+	numExpr  goto 35
+	rollExpr  goto 28
 
 state 59
-	boolExpr:  boolExpr CMP_EQ.boolExpr 
+	boolExpr:  boolExpr CMP_AND.boolExpr 
 
-	GET  shift 28
-	SET  shift 27
-	CMP_NOT  shift 30
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
 	STRING  shift 23
-	NUMBER  shift 25
-	DICE  shift 31
-	BOOLEAN  shift 29
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
 	'('  shift 24
 	.  error
 
-	strExpr  goto 37
-	boolExpr  goto 92
-	numExpr  goto 33
-	rollExpr  goto 26
+	strExpr  goto 39
+	boolExpr  goto 95
+	numExpr  goto 35
+	rollExpr  goto 28
 
 state 60
-	boolExpr:  boolExpr CMP_NEQ.boolExpr 
+	boolExpr:  boolExpr CMP_OR.boolExpr 
 
-	GET  shift 28
-	SET  shift 27
-	CMP_NOT  shift 30
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
 	STRING  shift 23
-	NUMBER  shift 25
-	DICE  shift 31
-	BOOLEAN  shift 29
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
 	'('  shift 24
 	.  error
 
-	strExpr  goto 37
-	boolExpr  goto 93
-	numExpr  goto 33
-	rollExpr  goto 26
+	strExpr  goto 39
+	boolExpr  goto 96
+	numExpr  goto 35
+	rollExpr  goto 28
 
 state 61
+	boolExpr:  boolExpr CMP_EQ.boolExpr 
+
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
+	STRING  shift 23
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
+	'('  shift 24
+	.  error
+
+	strExpr  goto 39
+	boolExpr  goto 97
+	numExpr  goto 35
+	rollExpr  goto 28
+
+state 62
+	boolExpr:  boolExpr CMP_NEQ.boolExpr 
+
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
+	STRING  shift 23
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
+	'('  shift 24
+	.  error
+
+	strExpr  goto 39
+	boolExpr  goto 98
+	numExpr  goto 35
+	rollExpr  goto 28
+
+state 63
 	strExpr:  '(' strExpr.')' 
 	strExpr:  strExpr.'+' strExpr 
 	strExpr:  strExpr.'+' numExpr 
@@ -788,14 +842,14 @@ state 61
 	boolExpr:  strExpr.CMP_EQ strExpr 
 	boolExpr:  strExpr.CMP_NEQ strExpr 
 
-	CMP_EQ  shift 42
-	CMP_NEQ  shift 43
-	'+'  shift 41
-	')'  shift 94
+	CMP_EQ  shift 44
+	CMP_NEQ  shift 45
+	'+'  shift 43
+	')'  shift 99
 	.  error
 
 
-state 62
+state 64
 	strExpr:  boolExpr.'+' strExpr 
 	boolExpr:  '(' boolExpr.')' 
 	boolExpr:  boolExpr.CMP_AND boolExpr 
@@ -803,16 +857,16 @@ state 62
 	boolExpr:  boolExpr.CMP_EQ boolExpr 
 	boolExpr:  boolExpr.CMP_NEQ boolExpr 
 
-	CMP_EQ  shift 59
-	CMP_NEQ  shift 60
-	CMP_AND  shift 57
-	CMP_OR  shift 58
-	'+'  shift 56
-	')'  shift 95
+	CMP_EQ  shift 61
+	CMP_NEQ  shift 62
+	CMP_AND  shift 59
+	CMP_OR  shift 60
+	'+'  shift 58
+	')'  shift 100
 	.  error
 
 
-state 63
+state 65
 	strExpr:  numExpr.'+' strExpr 
 	boolExpr:  numExpr.CMP_LT numExpr 
 	boolExpr:  numExpr.CMP_GT numExpr 
@@ -826,199 +880,179 @@ state 63
 	numExpr:  numExpr.'*' numExpr 
 	numExpr:  numExpr.'/' numExpr 
 
-	CMP_LT  shift 46
-	CMP_GT  shift 47
-	CMP_LTE  shift 48
-	CMP_GTE  shift 49
-	CMP_EQ  shift 50
-	CMP_NEQ  shift 51
-	'+'  shift 45
-	'-'  shift 52
-	'*'  shift 53
-	'/'  shift 54
-	')'  shift 96
+	CMP_LT  shift 48
+	CMP_GT  shift 49
+	CMP_LTE  shift 50
+	CMP_GTE  shift 51
+	CMP_EQ  shift 52
+	CMP_NEQ  shift 53
+	'+'  shift 47
+	'-'  shift 54
+	'*'  shift 55
+	'/'  shift 56
+	')'  shift 101
 	.  error
 
-
-state 64
-	rollExpr:  NUMBER DICE.    (46)
-
-	.  reduce 46 (src line 96)
-
-
-state 65
-	numExpr:  SET '('.strExpr ',' numExpr ')' 
-
-	GET  shift 28
-	SET  shift 27
-	CMP_NOT  shift 30
-	STRING  shift 23
-	NUMBER  shift 25
-	DICE  shift 31
-	BOOLEAN  shift 29
-	'('  shift 24
-	.  error
-
-	strExpr  goto 97
-	boolExpr  goto 34
-	numExpr  goto 33
-	rollExpr  goto 26
 
 state 66
-	numExpr:  GET '('.strExpr ')' 
+	strExpr:  GET '('.strExpr ')' 
 
-	GET  shift 28
-	SET  shift 27
-	CMP_NOT  shift 30
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
 	STRING  shift 23
-	NUMBER  shift 25
-	DICE  shift 31
-	BOOLEAN  shift 29
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
 	'('  shift 24
 	.  error
 
-	strExpr  goto 98
-	boolExpr  goto 34
-	numExpr  goto 33
-	rollExpr  goto 26
+	strExpr  goto 102
+	boolExpr  goto 36
+	numExpr  goto 35
+	rollExpr  goto 28
 
 state 67
+	strExpr:  SET '('.strExpr ',' strExpr ')' 
+	boolExpr:  SET '('.strExpr ',' boolExpr ')' 
+	numExpr:  SET '('.strExpr ',' numExpr ')' 
+
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
+	STRING  shift 23
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
+	'('  shift 24
+	.  error
+
+	strExpr  goto 103
+	boolExpr  goto 36
+	numExpr  goto 35
+	rollExpr  goto 28
+
+state 68
+	rollExpr:  NUMBER DICE.    (52)
+
+	.  reduce 52 (src line 102)
+
+
+state 69
+	numExpr:  GETN '('.strExpr ')' 
+
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
+	STRING  shift 23
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
+	'('  shift 24
+	.  error
+
+	strExpr  goto 104
+	boolExpr  goto 36
+	numExpr  goto 35
+	rollExpr  goto 28
+
+state 70
 	strExpr:  boolExpr.'+' strExpr 
-	boolExpr:  CMP_NOT boolExpr.    (23)
+	boolExpr:  CMP_NOT boolExpr.    (27)
 	boolExpr:  boolExpr.CMP_AND boolExpr 
 	boolExpr:  boolExpr.CMP_OR boolExpr 
 	boolExpr:  boolExpr.CMP_EQ boolExpr 
 	boolExpr:  boolExpr.CMP_NEQ boolExpr 
 
-	.  reduce 23 (src line 67)
+	.  reduce 27 (src line 71)
 
 
-state 68
+state 71
+	boolExpr:  GETB '('.strExpr ')' 
+
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
+	STRING  shift 23
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
+	'('  shift 24
+	.  error
+
+	strExpr  goto 105
+	boolExpr  goto 36
+	numExpr  goto 35
+	rollExpr  goto 28
+
+state 72
 	stmt:  GOTO '(' strExpr ')'.    (8)
 
 	.  reduce 8 (src line 46)
 
 
-state 69
+state 73
 	stmt:  CHOICE '(' strExpr ','.block ')' 
 
 	START  shift 3
 	.  error
 
-	block  goto 99
+	block  goto 106
 
-state 70
+state 74
 	stmt:  IF '(' boolExpr ')'.block 
 	stmt:  IF '(' boolExpr ')'.block ELSE block 
 
 	START  shift 3
 	.  error
 
-	block  goto 100
-
-state 71
-	stmt:  SET '(' strExpr ','.numExpr ')' 
-
-	GET  shift 28
-	SET  shift 27
-	NUMBER  shift 25
-	DICE  shift 31
-	'('  shift 80
-	.  error
-
-	numExpr  goto 101
-	rollExpr  goto 26
-
-state 72
-	strExpr:  strExpr.'+' strExpr 
-	strExpr:  strExpr '+' strExpr.    (16)
-	strExpr:  strExpr.'+' numExpr 
-	strExpr:  strExpr.'+' boolExpr 
-	boolExpr:  strExpr.CMP_EQ strExpr 
-	boolExpr:  strExpr.CMP_NEQ strExpr 
-
-	CMP_EQ  shift 42
-	CMP_NEQ  shift 43
-	.  reduce 16 (src line 57)
-
-
-state 73
-	strExpr:  strExpr '+' numExpr.    (17)
-	strExpr:  numExpr.'+' strExpr 
-	boolExpr:  numExpr.CMP_LT numExpr 
-	boolExpr:  numExpr.CMP_GT numExpr 
-	boolExpr:  numExpr.CMP_LTE numExpr 
-	boolExpr:  numExpr.CMP_GTE numExpr 
-	boolExpr:  numExpr.CMP_EQ numExpr 
-	boolExpr:  numExpr.CMP_NEQ numExpr 
-	numExpr:  numExpr.'+' numExpr 
-	numExpr:  numExpr.'-' numExpr 
-	numExpr:  numExpr.'*' numExpr 
-	numExpr:  numExpr.'/' numExpr 
-
-	CMP_LT  shift 46
-	CMP_GT  shift 47
-	CMP_LTE  shift 48
-	CMP_GTE  shift 49
-	CMP_EQ  shift 50
-	CMP_NEQ  shift 51
-	'-'  shift 52
-	'*'  shift 53
-	'/'  shift 54
-	.  reduce 17 (src line 58)
-
-
-state 74
-	strExpr:  strExpr '+' boolExpr.    (19)
-	strExpr:  boolExpr.'+' strExpr 
-	boolExpr:  boolExpr.CMP_AND boolExpr 
-	boolExpr:  boolExpr.CMP_OR boolExpr 
-	boolExpr:  boolExpr.CMP_EQ boolExpr 
-	boolExpr:  boolExpr.CMP_NEQ boolExpr 
-
-	CMP_EQ  shift 59
-	CMP_NEQ  shift 60
-	CMP_AND  shift 57
-	CMP_OR  shift 58
-	.  reduce 19 (src line 60)
-
+	block  goto 107
 
 state 75
-	strExpr:  strExpr.'+' strExpr 
-	strExpr:  strExpr.'+' numExpr 
-	strExpr:  strExpr.'+' boolExpr 
-	boolExpr:  strExpr.CMP_EQ strExpr 
-	boolExpr:  strExpr CMP_EQ strExpr.    (34)
-	boolExpr:  strExpr.CMP_NEQ strExpr 
+	stmt:  SET '(' strExpr ','.strExpr ')' 
+	stmt:  SET '(' strExpr ','.numExpr ')' 
+	stmt:  SET '(' strExpr ','.boolExpr ')' 
 
-	.  reduce 34 (src line 78)
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
+	STRING  shift 23
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
+	'('  shift 24
+	.  error
 
+	strExpr  goto 108
+	boolExpr  goto 110
+	numExpr  goto 109
+	rollExpr  goto 28
 
 state 76
 	strExpr:  strExpr.'+' strExpr 
+	strExpr:  strExpr '+' strExpr.    (18)
 	strExpr:  strExpr.'+' numExpr 
 	strExpr:  strExpr.'+' boolExpr 
 	boolExpr:  strExpr.CMP_EQ strExpr 
 	boolExpr:  strExpr.CMP_NEQ strExpr 
-	boolExpr:  strExpr CMP_NEQ strExpr.    (35)
 
-	.  reduce 35 (src line 79)
-
-
-state 77
-	strExpr:  strExpr.'+' strExpr 
-	strExpr:  strExpr.'+' numExpr 
-	strExpr:  numExpr '+' strExpr.    (18)
-	strExpr:  strExpr.'+' boolExpr 
-	boolExpr:  strExpr.CMP_EQ strExpr 
-	boolExpr:  strExpr.CMP_NEQ strExpr 
-
-	CMP_EQ  shift 42
-	CMP_NEQ  shift 43
+	CMP_EQ  shift 44
+	CMP_NEQ  shift 45
 	.  reduce 18 (src line 59)
 
 
-state 78
+state 77
+	strExpr:  strExpr '+' numExpr.    (19)
 	strExpr:  numExpr.'+' strExpr 
 	boolExpr:  numExpr.CMP_LT numExpr 
 	boolExpr:  numExpr.CMP_GT numExpr 
@@ -1027,221 +1061,572 @@ state 78
 	boolExpr:  numExpr.CMP_EQ numExpr 
 	boolExpr:  numExpr.CMP_NEQ numExpr 
 	numExpr:  numExpr.'+' numExpr 
-	numExpr:  numExpr '+' numExpr.    (39)
 	numExpr:  numExpr.'-' numExpr 
 	numExpr:  numExpr.'*' numExpr 
 	numExpr:  numExpr.'/' numExpr 
 
-	CMP_LT  shift 46
-	CMP_GT  shift 47
-	CMP_LTE  shift 48
-	CMP_GTE  shift 49
-	CMP_EQ  shift 50
-	CMP_NEQ  shift 51
-	'*'  shift 53
-	'/'  shift 54
-	.  reduce 39 (src line 86)
+	CMP_LT  shift 48
+	CMP_GT  shift 49
+	CMP_LTE  shift 50
+	CMP_GTE  shift 51
+	CMP_EQ  shift 52
+	CMP_NEQ  shift 53
+	'-'  shift 54
+	'*'  shift 55
+	'/'  shift 56
+	.  reduce 19 (src line 60)
+
+
+state 78
+	strExpr:  strExpr '+' boolExpr.    (21)
+	strExpr:  boolExpr.'+' strExpr 
+	boolExpr:  boolExpr.CMP_AND boolExpr 
+	boolExpr:  boolExpr.CMP_OR boolExpr 
+	boolExpr:  boolExpr.CMP_EQ boolExpr 
+	boolExpr:  boolExpr.CMP_NEQ boolExpr 
+
+	CMP_EQ  shift 61
+	CMP_NEQ  shift 62
+	CMP_AND  shift 59
+	CMP_OR  shift 60
+	.  reduce 21 (src line 62)
 
 
 state 79
-	boolExpr:  numExpr CMP_LT numExpr.    (28)
-	numExpr:  numExpr.'+' numExpr 
-	numExpr:  numExpr.'-' numExpr 
-	numExpr:  numExpr.'*' numExpr 
-	numExpr:  numExpr.'/' numExpr 
-
-	'-'  shift 52
-	'*'  shift 53
-	'/'  shift 54
-	.  reduce 28 (src line 72)
-
-
-state 80
-	numExpr:  '('.numExpr ')' 
-
-	GET  shift 28
-	SET  shift 27
-	NUMBER  shift 25
-	DICE  shift 31
-	'('  shift 80
-	.  error
-
-	numExpr  goto 103
-	rollExpr  goto 26
-
-state 81
-	boolExpr:  numExpr CMP_GT numExpr.    (29)
-	numExpr:  numExpr.'+' numExpr 
-	numExpr:  numExpr.'-' numExpr 
-	numExpr:  numExpr.'*' numExpr 
-	numExpr:  numExpr.'/' numExpr 
-
-	'-'  shift 52
-	'*'  shift 53
-	'/'  shift 54
-	.  reduce 29 (src line 73)
-
-
-state 82
-	boolExpr:  numExpr CMP_LTE numExpr.    (30)
-	numExpr:  numExpr.'+' numExpr 
-	numExpr:  numExpr.'-' numExpr 
-	numExpr:  numExpr.'*' numExpr 
-	numExpr:  numExpr.'/' numExpr 
-
-	'-'  shift 52
-	'*'  shift 53
-	'/'  shift 54
-	.  reduce 30 (src line 74)
-
-
-state 83
-	boolExpr:  numExpr CMP_GTE numExpr.    (31)
-	numExpr:  numExpr.'+' numExpr 
-	numExpr:  numExpr.'-' numExpr 
-	numExpr:  numExpr.'*' numExpr 
-	numExpr:  numExpr.'/' numExpr 
-
-	'-'  shift 52
-	'*'  shift 53
-	'/'  shift 54
-	.  reduce 31 (src line 75)
-
-
-state 84
-	boolExpr:  numExpr CMP_EQ numExpr.    (32)
-	numExpr:  numExpr.'+' numExpr 
-	numExpr:  numExpr.'-' numExpr 
-	numExpr:  numExpr.'*' numExpr 
-	numExpr:  numExpr.'/' numExpr 
-
-	'-'  shift 52
-	'*'  shift 53
-	'/'  shift 54
-	.  reduce 32 (src line 76)
-
-
-state 85
-	boolExpr:  numExpr CMP_NEQ numExpr.    (33)
-	numExpr:  numExpr.'+' numExpr 
-	numExpr:  numExpr.'-' numExpr 
-	numExpr:  numExpr.'*' numExpr 
-	numExpr:  numExpr.'/' numExpr 
-
-	'-'  shift 52
-	'*'  shift 53
-	'/'  shift 54
-	.  reduce 33 (src line 77)
-
-
-state 86
-	numExpr:  numExpr.'+' numExpr 
-	numExpr:  numExpr.'-' numExpr 
-	numExpr:  numExpr '-' numExpr.    (40)
-	numExpr:  numExpr.'*' numExpr 
-	numExpr:  numExpr.'/' numExpr 
-
-	'*'  shift 53
-	'/'  shift 54
-	.  reduce 40 (src line 87)
-
-
-state 87
-	numExpr:  numExpr.'+' numExpr 
-	numExpr:  numExpr.'-' numExpr 
-	numExpr:  numExpr.'*' numExpr 
-	numExpr:  numExpr '*' numExpr.    (41)
-	numExpr:  numExpr.'/' numExpr 
-
-	.  reduce 41 (src line 88)
-
-
-state 88
-	numExpr:  numExpr.'+' numExpr 
-	numExpr:  numExpr.'-' numExpr 
-	numExpr:  numExpr.'*' numExpr 
-	numExpr:  numExpr.'/' numExpr 
-	numExpr:  numExpr '/' numExpr.    (42)
-
-	.  reduce 42 (src line 89)
-
-
-state 89
 	strExpr:  strExpr.'+' strExpr 
 	strExpr:  strExpr.'+' numExpr 
 	strExpr:  strExpr.'+' boolExpr 
-	strExpr:  boolExpr '+' strExpr.    (20)
+	boolExpr:  strExpr.CMP_EQ strExpr 
+	boolExpr:  strExpr CMP_EQ strExpr.    (38)
+	boolExpr:  strExpr.CMP_NEQ strExpr 
+
+	.  reduce 38 (src line 82)
+
+
+state 80
+	strExpr:  strExpr.'+' strExpr 
+	strExpr:  strExpr.'+' numExpr 
+	strExpr:  strExpr.'+' boolExpr 
+	boolExpr:  strExpr.CMP_EQ strExpr 
+	boolExpr:  strExpr.CMP_NEQ strExpr 
+	boolExpr:  strExpr CMP_NEQ strExpr.    (39)
+
+	.  reduce 39 (src line 83)
+
+
+state 81
+	strExpr:  strExpr.'+' strExpr 
+	strExpr:  strExpr.'+' numExpr 
+	strExpr:  numExpr '+' strExpr.    (20)
+	strExpr:  strExpr.'+' boolExpr 
 	boolExpr:  strExpr.CMP_EQ strExpr 
 	boolExpr:  strExpr.CMP_NEQ strExpr 
 
-	CMP_EQ  shift 42
-	CMP_NEQ  shift 43
+	CMP_EQ  shift 44
+	CMP_NEQ  shift 45
 	.  reduce 20 (src line 61)
 
 
-state 90
-	strExpr:  boolExpr.'+' strExpr 
-	boolExpr:  boolExpr.CMP_AND boolExpr 
-	boolExpr:  boolExpr CMP_AND boolExpr.    (24)
-	boolExpr:  boolExpr.CMP_OR boolExpr 
-	boolExpr:  boolExpr.CMP_EQ boolExpr 
-	boolExpr:  boolExpr.CMP_NEQ boolExpr 
+state 82
+	strExpr:  numExpr.'+' strExpr 
+	boolExpr:  numExpr.CMP_LT numExpr 
+	boolExpr:  numExpr.CMP_GT numExpr 
+	boolExpr:  numExpr.CMP_LTE numExpr 
+	boolExpr:  numExpr.CMP_GTE numExpr 
+	boolExpr:  numExpr.CMP_EQ numExpr 
+	boolExpr:  numExpr.CMP_NEQ numExpr 
+	numExpr:  numExpr.'+' numExpr 
+	numExpr:  numExpr '+' numExpr.    (45)
+	numExpr:  numExpr.'-' numExpr 
+	numExpr:  numExpr.'*' numExpr 
+	numExpr:  numExpr.'/' numExpr 
 
-	.  reduce 24 (src line 68)
+	CMP_LT  shift 48
+	CMP_GT  shift 49
+	CMP_LTE  shift 50
+	CMP_GTE  shift 51
+	CMP_EQ  shift 52
+	CMP_NEQ  shift 53
+	'*'  shift 55
+	'/'  shift 56
+	.  reduce 45 (src line 92)
+
+
+state 83
+	boolExpr:  numExpr CMP_LT numExpr.    (32)
+	numExpr:  numExpr.'+' numExpr 
+	numExpr:  numExpr.'-' numExpr 
+	numExpr:  numExpr.'*' numExpr 
+	numExpr:  numExpr.'/' numExpr 
+
+	'-'  shift 54
+	'*'  shift 55
+	'/'  shift 56
+	.  reduce 32 (src line 76)
+
+
+state 84
+	numExpr:  '('.numExpr ')' 
+
+	GETN  shift 29
+	SET  shift 85
+	NUMBER  shift 27
+	DICE  shift 33
+	'('  shift 84
+	.  error
+
+	numExpr  goto 112
+	rollExpr  goto 28
+
+state 85
+	numExpr:  SET.'(' strExpr ',' numExpr ')' 
+
+	'('  shift 113
+	.  error
+
+
+state 86
+	boolExpr:  numExpr CMP_GT numExpr.    (33)
+	numExpr:  numExpr.'+' numExpr 
+	numExpr:  numExpr.'-' numExpr 
+	numExpr:  numExpr.'*' numExpr 
+	numExpr:  numExpr.'/' numExpr 
+
+	'-'  shift 54
+	'*'  shift 55
+	'/'  shift 56
+	.  reduce 33 (src line 77)
+
+
+state 87
+	boolExpr:  numExpr CMP_LTE numExpr.    (34)
+	numExpr:  numExpr.'+' numExpr 
+	numExpr:  numExpr.'-' numExpr 
+	numExpr:  numExpr.'*' numExpr 
+	numExpr:  numExpr.'/' numExpr 
+
+	'-'  shift 54
+	'*'  shift 55
+	'/'  shift 56
+	.  reduce 34 (src line 78)
+
+
+state 88
+	boolExpr:  numExpr CMP_GTE numExpr.    (35)
+	numExpr:  numExpr.'+' numExpr 
+	numExpr:  numExpr.'-' numExpr 
+	numExpr:  numExpr.'*' numExpr 
+	numExpr:  numExpr.'/' numExpr 
+
+	'-'  shift 54
+	'*'  shift 55
+	'/'  shift 56
+	.  reduce 35 (src line 79)
+
+
+state 89
+	boolExpr:  numExpr CMP_EQ numExpr.    (36)
+	numExpr:  numExpr.'+' numExpr 
+	numExpr:  numExpr.'-' numExpr 
+	numExpr:  numExpr.'*' numExpr 
+	numExpr:  numExpr.'/' numExpr 
+
+	'-'  shift 54
+	'*'  shift 55
+	'/'  shift 56
+	.  reduce 36 (src line 80)
+
+
+state 90
+	boolExpr:  numExpr CMP_NEQ numExpr.    (37)
+	numExpr:  numExpr.'+' numExpr 
+	numExpr:  numExpr.'-' numExpr 
+	numExpr:  numExpr.'*' numExpr 
+	numExpr:  numExpr.'/' numExpr 
+
+	'-'  shift 54
+	'*'  shift 55
+	'/'  shift 56
+	.  reduce 37 (src line 81)
 
 
 state 91
-	strExpr:  boolExpr.'+' strExpr 
-	boolExpr:  boolExpr.CMP_AND boolExpr 
-	boolExpr:  boolExpr.CMP_OR boolExpr 
-	boolExpr:  boolExpr CMP_OR boolExpr.    (25)
-	boolExpr:  boolExpr.CMP_EQ boolExpr 
-	boolExpr:  boolExpr.CMP_NEQ boolExpr 
+	numExpr:  numExpr.'+' numExpr 
+	numExpr:  numExpr.'-' numExpr 
+	numExpr:  numExpr '-' numExpr.    (46)
+	numExpr:  numExpr.'*' numExpr 
+	numExpr:  numExpr.'/' numExpr 
 
-	.  reduce 25 (src line 69)
+	'*'  shift 55
+	'/'  shift 56
+	.  reduce 46 (src line 93)
 
 
 state 92
+	numExpr:  numExpr.'+' numExpr 
+	numExpr:  numExpr.'-' numExpr 
+	numExpr:  numExpr.'*' numExpr 
+	numExpr:  numExpr '*' numExpr.    (47)
+	numExpr:  numExpr.'/' numExpr 
+
+	.  reduce 47 (src line 94)
+
+
+state 93
+	numExpr:  numExpr.'+' numExpr 
+	numExpr:  numExpr.'-' numExpr 
+	numExpr:  numExpr.'*' numExpr 
+	numExpr:  numExpr.'/' numExpr 
+	numExpr:  numExpr '/' numExpr.    (48)
+
+	.  reduce 48 (src line 95)
+
+
+state 94
+	strExpr:  strExpr.'+' strExpr 
+	strExpr:  strExpr.'+' numExpr 
+	strExpr:  strExpr.'+' boolExpr 
+	strExpr:  boolExpr '+' strExpr.    (22)
+	boolExpr:  strExpr.CMP_EQ strExpr 
+	boolExpr:  strExpr.CMP_NEQ strExpr 
+
+	CMP_EQ  shift 44
+	CMP_NEQ  shift 45
+	.  reduce 22 (src line 63)
+
+
+state 95
+	strExpr:  boolExpr.'+' strExpr 
+	boolExpr:  boolExpr.CMP_AND boolExpr 
+	boolExpr:  boolExpr CMP_AND boolExpr.    (28)
+	boolExpr:  boolExpr.CMP_OR boolExpr 
+	boolExpr:  boolExpr.CMP_EQ boolExpr 
+	boolExpr:  boolExpr.CMP_NEQ boolExpr 
+
+	.  reduce 28 (src line 72)
+
+
+state 96
+	strExpr:  boolExpr.'+' strExpr 
+	boolExpr:  boolExpr.CMP_AND boolExpr 
+	boolExpr:  boolExpr.CMP_OR boolExpr 
+	boolExpr:  boolExpr CMP_OR boolExpr.    (29)
+	boolExpr:  boolExpr.CMP_EQ boolExpr 
+	boolExpr:  boolExpr.CMP_NEQ boolExpr 
+
+	.  reduce 29 (src line 73)
+
+
+state 97
 	strExpr:  boolExpr.'+' strExpr 
 	boolExpr:  boolExpr.CMP_AND boolExpr 
 	boolExpr:  boolExpr.CMP_OR boolExpr 
 	boolExpr:  boolExpr.CMP_EQ boolExpr 
-	boolExpr:  boolExpr CMP_EQ boolExpr.    (26)
+	boolExpr:  boolExpr CMP_EQ boolExpr.    (30)
 	boolExpr:  boolExpr.CMP_NEQ boolExpr 
+
+	.  reduce 30 (src line 74)
+
+
+state 98
+	strExpr:  boolExpr.'+' strExpr 
+	boolExpr:  boolExpr.CMP_AND boolExpr 
+	boolExpr:  boolExpr.CMP_OR boolExpr 
+	boolExpr:  boolExpr.CMP_EQ boolExpr 
+	boolExpr:  boolExpr.CMP_NEQ boolExpr 
+	boolExpr:  boolExpr CMP_NEQ boolExpr.    (31)
+
+	.  reduce 31 (src line 75)
+
+
+state 99
+	strExpr:  '(' strExpr ')'.    (17)
+
+	.  reduce 17 (src line 58)
+
+
+state 100
+	boolExpr:  '(' boolExpr ')'.    (26)
 
 	.  reduce 26 (src line 70)
 
 
-state 93
+state 101
+	numExpr:  '(' numExpr ')'.    (44)
+
+	.  reduce 44 (src line 91)
+
+
+state 102
+	strExpr:  strExpr.'+' strExpr 
+	strExpr:  strExpr.'+' numExpr 
+	strExpr:  strExpr.'+' boolExpr 
+	strExpr:  GET '(' strExpr.')' 
+	boolExpr:  strExpr.CMP_EQ strExpr 
+	boolExpr:  strExpr.CMP_NEQ strExpr 
+
+	CMP_EQ  shift 44
+	CMP_NEQ  shift 45
+	'+'  shift 43
+	')'  shift 114
+	.  error
+
+
+state 103
+	strExpr:  strExpr.'+' strExpr 
+	strExpr:  strExpr.'+' numExpr 
+	strExpr:  strExpr.'+' boolExpr 
+	strExpr:  SET '(' strExpr.',' strExpr ')' 
+	boolExpr:  strExpr.CMP_EQ strExpr 
+	boolExpr:  strExpr.CMP_NEQ strExpr 
+	boolExpr:  SET '(' strExpr.',' boolExpr ')' 
+	numExpr:  SET '(' strExpr.',' numExpr ')' 
+
+	CMP_EQ  shift 44
+	CMP_NEQ  shift 45
+	'+'  shift 43
+	','  shift 115
+	.  error
+
+
+state 104
+	strExpr:  strExpr.'+' strExpr 
+	strExpr:  strExpr.'+' numExpr 
+	strExpr:  strExpr.'+' boolExpr 
+	boolExpr:  strExpr.CMP_EQ strExpr 
+	boolExpr:  strExpr.CMP_NEQ strExpr 
+	numExpr:  GETN '(' strExpr.')' 
+
+	CMP_EQ  shift 44
+	CMP_NEQ  shift 45
+	'+'  shift 43
+	')'  shift 116
+	.  error
+
+
+state 105
+	strExpr:  strExpr.'+' strExpr 
+	strExpr:  strExpr.'+' numExpr 
+	strExpr:  strExpr.'+' boolExpr 
+	boolExpr:  strExpr.CMP_EQ strExpr 
+	boolExpr:  strExpr.CMP_NEQ strExpr 
+	boolExpr:  GETB '(' strExpr.')' 
+
+	CMP_EQ  shift 44
+	CMP_NEQ  shift 45
+	'+'  shift 43
+	')'  shift 117
+	.  error
+
+
+state 106
+	stmt:  CHOICE '(' strExpr ',' block.')' 
+
+	')'  shift 118
+	.  error
+
+
+state 107
+	stmt:  IF '(' boolExpr ')' block.    (10)
+	stmt:  IF '(' boolExpr ')' block.ELSE block 
+
+	ELSE  shift 119
+	.  reduce 10 (src line 48)
+
+
+state 108
+	stmt:  SET '(' strExpr ',' strExpr.')' 
+	strExpr:  strExpr.'+' strExpr 
+	strExpr:  strExpr.'+' numExpr 
+	strExpr:  strExpr.'+' boolExpr 
+	boolExpr:  strExpr.CMP_EQ strExpr 
+	boolExpr:  strExpr.CMP_NEQ strExpr 
+
+	CMP_EQ  shift 44
+	CMP_NEQ  shift 45
+	'+'  shift 43
+	')'  shift 120
+	.  error
+
+
+state 109
+	stmt:  SET '(' strExpr ',' numExpr.')' 
+	strExpr:  numExpr.'+' strExpr 
+	boolExpr:  numExpr.CMP_LT numExpr 
+	boolExpr:  numExpr.CMP_GT numExpr 
+	boolExpr:  numExpr.CMP_LTE numExpr 
+	boolExpr:  numExpr.CMP_GTE numExpr 
+	boolExpr:  numExpr.CMP_EQ numExpr 
+	boolExpr:  numExpr.CMP_NEQ numExpr 
+	numExpr:  numExpr.'+' numExpr 
+	numExpr:  numExpr.'-' numExpr 
+	numExpr:  numExpr.'*' numExpr 
+	numExpr:  numExpr.'/' numExpr 
+
+	CMP_LT  shift 48
+	CMP_GT  shift 49
+	CMP_LTE  shift 50
+	CMP_GTE  shift 51
+	CMP_EQ  shift 52
+	CMP_NEQ  shift 53
+	'+'  shift 47
+	'-'  shift 54
+	'*'  shift 55
+	'/'  shift 56
+	')'  shift 121
+	.  error
+
+
+state 110
+	stmt:  SET '(' strExpr ',' boolExpr.')' 
 	strExpr:  boolExpr.'+' strExpr 
 	boolExpr:  boolExpr.CMP_AND boolExpr 
 	boolExpr:  boolExpr.CMP_OR boolExpr 
 	boolExpr:  boolExpr.CMP_EQ boolExpr 
 	boolExpr:  boolExpr.CMP_NEQ boolExpr 
-	boolExpr:  boolExpr CMP_NEQ boolExpr.    (27)
 
-	.  reduce 27 (src line 71)
-
-
-state 94
-	strExpr:  '(' strExpr ')'.    (15)
-
-	.  reduce 15 (src line 56)
-
-
-state 95
-	boolExpr:  '(' boolExpr ')'.    (22)
-
-	.  reduce 22 (src line 66)
+	CMP_EQ  shift 61
+	CMP_NEQ  shift 62
+	CMP_AND  shift 59
+	CMP_OR  shift 60
+	'+'  shift 58
+	')'  shift 122
+	.  error
 
 
-state 96
-	numExpr:  '(' numExpr ')'.    (38)
+state 111
+	numExpr:  numExpr '+'.numExpr 
 
-	.  reduce 38 (src line 85)
+	GETN  shift 29
+	SET  shift 85
+	NUMBER  shift 27
+	DICE  shift 33
+	'('  shift 84
+	.  error
+
+	numExpr  goto 123
+	rollExpr  goto 28
+
+state 112
+	numExpr:  '(' numExpr.')' 
+	numExpr:  numExpr.'+' numExpr 
+	numExpr:  numExpr.'-' numExpr 
+	numExpr:  numExpr.'*' numExpr 
+	numExpr:  numExpr.'/' numExpr 
+
+	'+'  shift 111
+	'-'  shift 54
+	'*'  shift 55
+	'/'  shift 56
+	')'  shift 101
+	.  error
 
 
-state 97
+state 113
+	numExpr:  SET '('.strExpr ',' numExpr ')' 
+
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
+	STRING  shift 23
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
+	'('  shift 24
+	.  error
+
+	strExpr  goto 124
+	boolExpr  goto 36
+	numExpr  goto 35
+	rollExpr  goto 28
+
+state 114
+	strExpr:  GET '(' strExpr ')'.    (23)
+
+	.  reduce 23 (src line 64)
+
+
+state 115
+	strExpr:  SET '(' strExpr ','.strExpr ')' 
+	boolExpr:  SET '(' strExpr ','.boolExpr ')' 
+	numExpr:  SET '(' strExpr ','.numExpr ')' 
+
+	GET  shift 25
+	GETN  shift 29
+	GETB  shift 32
+	SET  shift 26
+	CMP_NOT  shift 31
+	STRING  shift 23
+	NUMBER  shift 27
+	DICE  shift 33
+	BOOLEAN  shift 30
+	'('  shift 24
+	.  error
+
+	strExpr  goto 125
+	boolExpr  goto 126
+	numExpr  goto 127
+	rollExpr  goto 28
+
+state 116
+	numExpr:  GETN '(' strExpr ')'.    (49)
+
+	.  reduce 49 (src line 96)
+
+
+state 117
+	boolExpr:  GETB '(' strExpr ')'.    (40)
+
+	.  reduce 40 (src line 84)
+
+
+state 118
+	stmt:  CHOICE '(' strExpr ',' block ')'.    (9)
+
+	.  reduce 9 (src line 47)
+
+
+state 119
+	stmt:  IF '(' boolExpr ')' block ELSE.block 
+
+	START  shift 3
+	.  error
+
+	block  goto 128
+
+state 120
+	stmt:  SET '(' strExpr ',' strExpr ')'.    (12)
+
+	.  reduce 12 (src line 50)
+
+
+state 121
+	stmt:  SET '(' strExpr ',' numExpr ')'.    (13)
+
+	.  reduce 13 (src line 51)
+
+
+state 122
+	stmt:  SET '(' strExpr ',' boolExpr ')'.    (14)
+
+	.  reduce 14 (src line 52)
+
+
+state 123
+	numExpr:  numExpr.'+' numExpr 
+	numExpr:  numExpr '+' numExpr.    (45)
+	numExpr:  numExpr.'-' numExpr 
+	numExpr:  numExpr.'*' numExpr 
+	numExpr:  numExpr.'/' numExpr 
+
+	'*'  shift 55
+	'/'  shift 56
+	.  reduce 45 (src line 92)
+
+
+state 124
 	strExpr:  strExpr.'+' strExpr 
 	strExpr:  strExpr.'+' numExpr 
 	strExpr:  strExpr.'+' boolExpr 
@@ -1249,173 +1634,134 @@ state 97
 	boolExpr:  strExpr.CMP_NEQ strExpr 
 	numExpr:  SET '(' strExpr.',' numExpr ')' 
 
-	CMP_EQ  shift 42
-	CMP_NEQ  shift 43
-	'+'  shift 41
-	','  shift 104
+	CMP_EQ  shift 44
+	CMP_NEQ  shift 45
+	'+'  shift 43
+	','  shift 129
 	.  error
 
 
-state 98
+state 125
 	strExpr:  strExpr.'+' strExpr 
 	strExpr:  strExpr.'+' numExpr 
 	strExpr:  strExpr.'+' boolExpr 
+	strExpr:  SET '(' strExpr ',' strExpr.')' 
 	boolExpr:  strExpr.CMP_EQ strExpr 
 	boolExpr:  strExpr.CMP_NEQ strExpr 
-	numExpr:  GET '(' strExpr.')' 
 
-	CMP_EQ  shift 42
-	CMP_NEQ  shift 43
-	'+'  shift 41
-	')'  shift 105
+	CMP_EQ  shift 44
+	CMP_NEQ  shift 45
+	'+'  shift 43
+	')'  shift 130
 	.  error
 
 
-state 99
-	stmt:  CHOICE '(' strExpr ',' block.')' 
+state 126
+	strExpr:  boolExpr.'+' strExpr 
+	boolExpr:  boolExpr.CMP_AND boolExpr 
+	boolExpr:  boolExpr.CMP_OR boolExpr 
+	boolExpr:  boolExpr.CMP_EQ boolExpr 
+	boolExpr:  boolExpr.CMP_NEQ boolExpr 
+	boolExpr:  SET '(' strExpr ',' boolExpr.')' 
 
-	')'  shift 106
+	CMP_EQ  shift 61
+	CMP_NEQ  shift 62
+	CMP_AND  shift 59
+	CMP_OR  shift 60
+	'+'  shift 58
+	')'  shift 131
 	.  error
 
 
-state 100
-	stmt:  IF '(' boolExpr ')' block.    (10)
-	stmt:  IF '(' boolExpr ')' block.ELSE block 
-
-	ELSE  shift 107
-	.  reduce 10 (src line 48)
-
-
-state 101
-	stmt:  SET '(' strExpr ',' numExpr.')' 
-	numExpr:  numExpr.'+' numExpr 
-	numExpr:  numExpr.'-' numExpr 
-	numExpr:  numExpr.'*' numExpr 
-	numExpr:  numExpr.'/' numExpr 
-
-	'+'  shift 102
-	'-'  shift 52
-	'*'  shift 53
-	'/'  shift 54
-	')'  shift 108
-	.  error
-
-
-state 102
-	numExpr:  numExpr '+'.numExpr 
-
-	GET  shift 28
-	SET  shift 27
-	NUMBER  shift 25
-	DICE  shift 31
-	'('  shift 80
-	.  error
-
-	numExpr  goto 109
-	rollExpr  goto 26
-
-state 103
-	numExpr:  '(' numExpr.')' 
-	numExpr:  numExpr.'+' numExpr 
-	numExpr:  numExpr.'-' numExpr 
-	numExpr:  numExpr.'*' numExpr 
-	numExpr:  numExpr.'/' numExpr 
-
-	'+'  shift 102
-	'-'  shift 52
-	'*'  shift 53
-	'/'  shift 54
-	')'  shift 96
-	.  error
-
-
-state 104
-	numExpr:  SET '(' strExpr ','.numExpr ')' 
-
-	GET  shift 28
-	SET  shift 27
-	NUMBER  shift 25
-	DICE  shift 31
-	'('  shift 80
-	.  error
-
-	numExpr  goto 110
-	rollExpr  goto 26
-
-state 105
-	numExpr:  GET '(' strExpr ')'.    (44)
-
-	.  reduce 44 (src line 91)
-
-
-state 106
-	stmt:  CHOICE '(' strExpr ',' block ')'.    (9)
-
-	.  reduce 9 (src line 47)
-
-
-state 107
-	stmt:  IF '(' boolExpr ')' block ELSE.block 
-
-	START  shift 3
-	.  error
-
-	block  goto 111
-
-state 108
-	stmt:  SET '(' strExpr ',' numExpr ')'.    (12)
-
-	.  reduce 12 (src line 50)
-
-
-state 109
-	numExpr:  numExpr.'+' numExpr 
-	numExpr:  numExpr '+' numExpr.    (39)
-	numExpr:  numExpr.'-' numExpr 
-	numExpr:  numExpr.'*' numExpr 
-	numExpr:  numExpr.'/' numExpr 
-
-	'*'  shift 53
-	'/'  shift 54
-	.  reduce 39 (src line 86)
-
-
-state 110
+state 127
+	strExpr:  numExpr.'+' strExpr 
+	boolExpr:  numExpr.CMP_LT numExpr 
+	boolExpr:  numExpr.CMP_GT numExpr 
+	boolExpr:  numExpr.CMP_LTE numExpr 
+	boolExpr:  numExpr.CMP_GTE numExpr 
+	boolExpr:  numExpr.CMP_EQ numExpr 
+	boolExpr:  numExpr.CMP_NEQ numExpr 
 	numExpr:  numExpr.'+' numExpr 
 	numExpr:  numExpr.'-' numExpr 
 	numExpr:  numExpr.'*' numExpr 
 	numExpr:  numExpr.'/' numExpr 
 	numExpr:  SET '(' strExpr ',' numExpr.')' 
 
-	'+'  shift 102
-	'-'  shift 52
-	'*'  shift 53
-	'/'  shift 54
-	')'  shift 112
+	CMP_LT  shift 48
+	CMP_GT  shift 49
+	CMP_LTE  shift 50
+	CMP_GTE  shift 51
+	CMP_EQ  shift 52
+	CMP_NEQ  shift 53
+	'+'  shift 47
+	'-'  shift 54
+	'*'  shift 55
+	'/'  shift 56
+	')'  shift 132
 	.  error
 
 
-state 111
+state 128
 	stmt:  IF '(' boolExpr ')' block ELSE block.    (11)
 
 	.  reduce 11 (src line 49)
 
 
-state 112
-	numExpr:  SET '(' strExpr ',' numExpr ')'.    (43)
+state 129
+	numExpr:  SET '(' strExpr ','.numExpr ')' 
 
-	.  reduce 43 (src line 90)
+	GETN  shift 29
+	SET  shift 85
+	NUMBER  shift 27
+	DICE  shift 33
+	'('  shift 84
+	.  error
+
+	numExpr  goto 133
+	rollExpr  goto 28
+
+state 130
+	strExpr:  SET '(' strExpr ',' strExpr ')'.    (24)
+
+	.  reduce 24 (src line 65)
 
 
-32 terminals, 9 nonterminals
-47 grammar rules, 113/16000 states
+state 131
+	boolExpr:  SET '(' strExpr ',' boolExpr ')'.    (41)
+
+	.  reduce 41 (src line 85)
+
+
+state 132
+	numExpr:  SET '(' strExpr ',' numExpr ')'.    (50)
+
+	.  reduce 50 (src line 97)
+
+
+state 133
+	numExpr:  numExpr.'+' numExpr 
+	numExpr:  numExpr.'-' numExpr 
+	numExpr:  numExpr.'*' numExpr 
+	numExpr:  numExpr.'/' numExpr 
+	numExpr:  SET '(' strExpr ',' numExpr.')' 
+
+	'+'  shift 111
+	'-'  shift 54
+	'*'  shift 55
+	'/'  shift 56
+	')'  shift 132
+	.  error
+
+
+34 terminals, 9 nonterminals
+53 grammar rules, 134/16000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
 58 working sets used
-memory: parser 105/240000
-78 extra closures
-388 shift entries, 1 exceptions
-50 goto entries
-56 entries saved by goto default
-Optimizer space used: output 260/240000
-260 table entries, 42 zero
-maximum spread: 32, maximum offset: 107
+memory: parser 123/240000
+100 extra closures
+521 shift entries, 1 exceptions
+58 goto entries
+66 entries saved by goto default
+Optimizer space used: output 335/240000
+335 table entries, 55 zero
+maximum spread: 34, maximum offset: 129

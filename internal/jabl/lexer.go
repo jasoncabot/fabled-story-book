@@ -162,6 +162,10 @@ func (l *lexer) Lex(lval *yySymType) int {
 		return IF
 	case "else":
 		return ELSE
+	case "getn":
+		return GETN
+	case "getb":
+		return GETB
 	case "get":
 		return GET
 	case "set":

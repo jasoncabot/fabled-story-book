@@ -1,20 +1,20 @@
 package cli
 
 type stateMapper struct {
-	cache map[string]float64
+	cache map[string]any
 }
 
 func NewStateMapper() *stateMapper {
 	return &stateMapper{
-		cache: map[string]float64{},
+		cache: map[string]any{},
 	}
 }
 
-func (s *stateMapper) Get(key string) (float64, error) {
+func (s *stateMapper) Get(key string) (any, error) {
 	return s.cache[key], nil
 }
 
-func (s *stateMapper) Set(key string, value float64) error {
+func (s *stateMapper) Set(key string, value any) error {
 	s.cache[key] = value
 	return nil
 }

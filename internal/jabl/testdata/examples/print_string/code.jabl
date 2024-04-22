@@ -7,4 +7,28 @@
     set("message", 1)
     print(get("message"))
     print(true)
+
+    print("abc" + "123") // "abc123"
+    print("The answer is: " + "42") // "The answer is: 42"
+
+    // Integer Addition:
+    print(10 + 20) // "30"
+    print(100 + 5) // "105"
+    print(7 + (4 + 3)) // "14"
+
+    // Combination of Strings and Integers:
+    print("Result: " + (10 + 5)) // "Result: 15"
+    print("Value: " + 20) // "Value: 20"
+    print(3 + " apples") // "3 apples"
+
+    // Nested Expressions and Parentheses:
+    print("abc" + ("123" + "456")) // "abc123456"
+    print((10 + 5) + " is the sum") // "15 is the sum"
+    print("Answer: " + ((4 * 5) + 3)) // "Answer: 23"
+
+    // Empty Strings and Numbers:
+    print("") // "" (empty string)
+    print(0) // "0"
+    print(0 + 0) // "0"
+
 }

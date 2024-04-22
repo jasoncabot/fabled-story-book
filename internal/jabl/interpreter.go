@@ -36,8 +36,8 @@ type Interpreter struct {
 }
 
 type State interface {
-	Get(key string) (float64, error)
-	Set(key string, value float64) error
+	Get(key string) (any, error)
+	Set(key string, value any) error
 }
 
 type SectionLoader interface {
@@ -206,6 +206,8 @@ func (i *Interpreter) printCode(stmt any, sb *strings.Builder, indent uint8) {
 		sb.WriteString(strconv.FormatFloat(t.sides, 'f', -1, 64))
 	case float64:
 		sb.WriteString(strconv.FormatFloat(t, 'f', -1, 64))
+	case int:
+		sb.WriteString(strconv.Itoa(t))
 	case string:
 		sb.WriteRune('"')
 		sb.WriteString(t)
@@ -237,6 +239,8 @@ var (
 		CHOICE: "choice",
 		SET:    "set",
 		GET:    "get",
+		GETN:   "getn",
+		GETB:   "getb",
 	}
 )
 
@@ -244,8 +248,47 @@ func (i *Interpreter) evalBool(e expr, state State) (bool, error) {
 	switch t := e.(type) {
 	case bool:
 		return t, nil
+	case float64:
+		return t != 0, nil
+	case int:
+		return t != 0, nil
+	case string:
+		if t == "true" || t == "1" {
+			return true, nil
+		} else if t == "false" || t == "0" {
+			return false, nil
+		}
+		return false, fmt.Errorf("string not convertible to bool")
 	case *parenExpr:
 		return i.evalBool(t.expr, state)
+	case *fnStmt:
+		switch t.fn {
+		case GET, GETB, GETN:
+			key, err := i.evalStr(t.expr, state)
+			if err != nil {
+				return false, err
+			}
+			val, err := state.Get(key)
+			if err != nil || val == nil {
+				return false, err
+			}
+			return i.evalBool(val, state)
+		case SET:
+			key, err := i.evalStr(t.expr, state)
+			if err != nil {
+				return false, err
+			}
+			val, err := i.evalBool(t.expr2, state)
+			if err != nil {
+				return false, err
+			}
+			return val, state.Set(key, val)
+		default:
+			if name, ok := printableFn[t.fn]; ok {
+				return false, fmt.Errorf("%s not convertible to bool", name)
+			}
+			return false, fmt.Errorf("invalid function token in bool: %d", t.fn)
+		}
 	case *notExpr:
 		val, err := i.evalBool(t.expr, state)
 		if err != nil {
@@ -338,11 +381,13 @@ func (i *Interpreter) evalNum(e expr, state State) (float64, error) {
 	switch t := e.(type) {
 	case float64:
 		return t, nil
+	case int:
+		return float64(t), nil
 	case bool:
 		if t {
-			return 1, nil
+			return float64(1), nil
 		}
-		return 0, nil
+		return float64(0), nil
 	case string:
 		if num, err := strconv.ParseFloat(t, 64); err == nil {
 			return num, nil
@@ -352,12 +397,16 @@ func (i *Interpreter) evalNum(e expr, state State) (float64, error) {
 		return i.evalNum(t.expr, state)
 	case *fnStmt:
 		switch t.fn {
-		case GET:
+		case GET, GETB, GETN:
 			key, err := i.evalStr(t.expr, state)
 			if err != nil {
 				return 0, err
 			}
-			return state.Get(key)
+			val, err := state.Get(key)
+			if err != nil || val == nil {
+				return 0, err
+			}
+			return i.evalNum(val, state)
 		case SET:
 			key, err := i.evalStr(t.expr, state)
 			if err != nil {
@@ -401,18 +450,127 @@ func (i *Interpreter) evalNum(e expr, state State) (float64, error) {
 		}
 		return float64(total), nil
 	default:
-		return 0, fmt.Errorf("invalid node type for number")
+		return 0, fmt.Errorf("invalid node type for number, cannot convert %T", t)
+	}
+}
+
+func (i *Interpreter) evalExpr(e expr, state State, result *Result) (any, error) {
+	switch t := e.(type) {
+	case float64:
+		return t, nil
+	case int:
+		return float64(t), nil
+	case bool:
+		return t, nil
+	case string:
+		return t, nil
+	case *parenExpr:
+		return i.evalExpr(t.expr, state, result)
+	case *cmpExpr:
+		return i.evalBool(t, state)
+	case *fnStmt:
+		switch t.fn {
+		case GET, GETB, GETN:
+			key, err := i.evalStr(t.expr, state)
+			if err != nil {
+				return nil, err
+			}
+			val, err := state.Get(key)
+			if err != nil || val == nil {
+				return nil, err
+			}
+			if t.fn == GETB {
+				return i.evalBool(val, state)
+			} else if t.fn == GETN {
+				return i.evalNum(val, state)
+			} else {
+				return i.evalStr(val, state)
+			}
+		case SET:
+			key, err := i.evalStr(t.expr, state)
+			if err != nil {
+				return nil, err
+			}
+			val, err := i.evalExpr(t.expr2, state, result)
+			if err != nil {
+				return nil, err
+			}
+			return val, state.Set(key, val)
+		default:
+			if name, ok := printableFn[t.fn]; ok {
+				return nil, fmt.Errorf("%s not convertible to expression", name)
+			}
+			return nil, fmt.Errorf("invalid function token in expr: %d", t.fn)
+		}
+	case *mathExpr:
+		left, err := i.evalExpr(t.left, state, result)
+		if err != nil {
+			return nil, err
+		}
+		right, err := i.evalExpr(t.right, state, result)
+		if err != nil {
+			return nil, err
+		}
+
+		// If either side is a string, we're doing string concatenation
+		if lhs, ok := left.(string); ok {
+			rhs, err := i.evalStr(right, state)
+			if err != nil {
+				return nil, err
+			}
+			return lhs + rhs, nil
+		} else if rhs, ok := right.(string); ok {
+			lhs, err := i.evalStr(left, state)
+			if err != nil {
+				return nil, err
+			}
+			return lhs + rhs, nil
+		}
+
+		// otherwise plain old maths
+		lhs, err := i.evalNum(left, state)
+		if err != nil {
+			return nil, err
+		}
+		rhs, err := i.evalNum(right, state)
+		if err != nil {
+			return nil, err
+		}
+
+		switch t.op {
+		case '+':
+			return lhs + rhs, nil
+		case '-':
+			return lhs - rhs, nil
+		case '*':
+			return lhs * rhs, nil
+		case '/':
+			return lhs / rhs, nil
+		}
+		return nil, fmt.Errorf("invalid operator %c for expression", t.op)
+	case *rollExpr:
+		total := uint(0)
+		for j := 0; j < int(t.num); j++ {
+			total += uint(math.Floor(t.sides*i.rand.Float64())) + 1
+		}
+		return float64(total), nil
+	default:
+		return nil, fmt.Errorf("invalid node type for expression: %T", t)
 	}
 }
 
 func (i *Interpreter) evalFn(f *fnStmt, state State, result *Result) error {
 	switch f.fn {
 	case PRINT:
-		expression, err := i.evalStr(f.expr, state)
+		expression, err := i.evalExpr(f.expr, state, result)
 		if err != nil {
 			return err
 		}
-		result.Output += expression + "\n"
+		str, err := i.evalStr(expression, state)
+		if err != nil {
+			return err
+		}
+		result.Output += str + "\n"
 		return nil
 	case GOTO:
 		identifier, err := i.evalStr(f.expr, state)
@@ -440,7 +598,7 @@ func (i *Interpreter) evalFn(f *fnStmt, state State, result *Result) error {
 		if err != nil {
 			return err
 		}
-		val, err := i.evalNum(f.expr2, state)
+		val, err := i.evalExpr(f.expr2, state, result)
 		if err != nil {
 			return err
 		}
@@ -462,6 +620,8 @@ func (i *Interpreter) evalStr(e expr, state State) (string, error) {
 			return "true", nil
 		}
 		return "false", nil
+	case int:
+		return strconv.Itoa(t), nil
 	case float64:
 		return strconv.FormatFloat(t, 'f', -1, 64), nil
 	case *parenExpr:
@@ -488,13 +648,13 @@ func (i *Interpreter) evalStr(e expr, state State) (string, error) {
 		return i.evalStr(val, state)
 	case *fnStmt:
 		switch t.fn {
-		case GET:
+		case GET, GETB, GETN:
 			key, err := i.evalStr(t.expr, state)
 			if err != nil {
 				return "", err
 			}
 			val, err := state.Get(key)
-			if err != nil {
+			if err != nil || val == nil {
 				return "", err
 			}
 			return i.evalStr(val, state)
@@ -503,14 +663,11 @@ func (i *Interpreter) evalStr(e expr, state State) (string, error) {
 			if err != nil {
 				return "", err
 			}
-			val, err := i.evalNum(t.expr2, state)
+			val, err := i.evalStr(t.expr2, state)
 			if err != nil {
 				return "", err
 			}
-			if err := state.Set(key, val); err != nil {
-				return "", err
-			}
-			return i.evalStr(val, state)
+			return val, state.Set(key, val)
 		default:
 			if name, ok := printableFn[t.fn]; ok {
 				return "", fmt.Errorf("%s not convertible to string", name)

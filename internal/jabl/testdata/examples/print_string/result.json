@@ -1,5 +1,5 @@
 {
-  "output": "hello world\nhello world\nhello world\nhello \"world\"\nhello\nworld\n1\ntrue\n",
+  "output": "hello world\nhello world\nhello world\nhello \"world\"\nhello\nworld\n1\ntrue\nabc123\nThe answer is: 42\n30\n105\n14\nResult: 15\nValue: 20\n3 apples\nabc123456\n15 is the sum\nAnswer: 23\n\n0\n0\n",
   "choices": null,
   "transition": ""
 }

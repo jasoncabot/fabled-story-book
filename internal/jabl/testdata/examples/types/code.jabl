@@ -1,0 +1,14 @@
+{
+    set("string", "1")
+    set("bool", true)
+    set("num", 1)
+    print("str" + get("string"))
+    print("str" + get("bool"))
+    print("str" + get("num"))
+    print(1 + getn("string"))
+    print(1 + getn("bool"))
+    print(1 + getn("num"))
+    print(true && getb("string"))
+    print(true && getb("bool"))
+    print(true && getb("num"))
+}

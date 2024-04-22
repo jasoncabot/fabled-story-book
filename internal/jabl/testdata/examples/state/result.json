@@ -1,5 +1,5 @@
 {
-  "output": "a == 10\na == b\n",
+  "output": "a == 10\na == b\nhello\n991\n991\n100\n991\n991\n991\n100\n991\n",
   "choices": null,
   "transition": ""
 }

@@ -101,10 +101,12 @@ Set a variable. The first parameter is the name of the variable and the second p
 
 This function returns the value that was set.
 
-All variables are `float64` values.
+Variables can be float64 values, strings or booleans.
 
 ```jabl
 set("some-value", 123) # => 123
+set("some-value", true) # => true
+set("some-value", "test") # => "test"
 ```
 
 ### get
@@ -113,10 +115,34 @@ Get a variable. The first parameter is the name of the variable.
 
 This function returns the value of the variable.
 
-All variables are `float64` values.
+This returns the `string` value or `""` if the variable does not exist.
+
+```jabl
+get("some-value") # => "Hello World!"
+```
+
+### getn
+
+Get a variable. The first parameter is the name of the variable.
+
+This function returns the value of the variable.
+
+This returns the `float64` value or `0` if the variable does not exist.
 
 ```jabl
 get("some-value") # => 123
+```
+
+### getb
+
+Get a variable. The first parameter is the name of the variable.
+
+This function returns the value of the variable.
+
+This returns the `bool` value or `false` if the variable does not exist.
+
+```jabl
+getb("some-value") # => false
 ```
 
 ## Comments

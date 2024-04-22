@@ -17,23 +17,25 @@ const END = 57347
 const IF = 57348
 const ELSE = 57349
 const GET = 57350
-const SET = 57351
-const PRINT = 57352
-const CHOICE = 57353
-const GOTO = 57354
-const CMP_LT = 57355
-const CMP_GT = 57356
-const CMP_LTE = 57357
-const CMP_GTE = 57358
-const CMP_EQ = 57359
-const CMP_NEQ = 57360
-const CMP_AND = 57361
-const CMP_OR = 57362
-const CMP_NOT = 57363
-const STRING = 57364
-const NUMBER = 57365
-const DICE = 57366
-const BOOLEAN = 57367
+const GETN = 57351
+const GETB = 57352
+const SET = 57353
+const PRINT = 57354
+const CHOICE = 57355
+const GOTO = 57356
+const CMP_LT = 57357
+const CMP_GT = 57358
+const CMP_LTE = 57359
+const CMP_GTE = 57360
+const CMP_EQ = 57361
+const CMP_NEQ = 57362
+const CMP_AND = 57363
+const CMP_OR = 57364
+const CMP_NOT = 57365
+const STRING = 57366
+const NUMBER = 57367
+const DICE = 57368
+const BOOLEAN = 57369
 
 var yyToknames = [...]string{
 	"$end",
@@ -44,6 +46,8 @@ var yyToknames = [...]string{
 	"IF",
 	"ELSE",
 	"GET",
+	"GETN",
+	"GETB",
 	"SET",
 	"PRINT",
 	"CHOICE",
@@ -84,100 +88,116 @@ var yyExca = [...]int8{
 
 const yyPrivate = 57344
 
-const yyLast = 260
+const yyLast = 335
 
-var yyAct = [...]int8{
-	33, 106, 66, 2, 53, 54, 46, 47, 48, 49,
-	50, 51, 52, 53, 54, 21, 28, 27, 37, 45,
-	52, 53, 54, 19, 96, 63, 65, 59, 60, 57,
-	58, 25, 31, 20, 32, 35, 56, 38, 80, 18,
-	64, 95, 73, 61, 17, 16, 78, 79, 81, 82,
-	83, 84, 85, 86, 87, 88, 15, 14, 42, 43,
-	72, 75, 76, 107, 77, 34, 39, 41, 59, 60,
-	57, 58, 101, 99, 100, 89, 3, 56, 28, 27,
-	22, 103, 70, 36, 97, 98, 59, 60, 57, 58,
-	62, 30, 23, 25, 31, 29, 67, 42, 43, 5,
-	24, 42, 43, 109, 13, 110, 41, 74, 1, 26,
-	4, 111, 104, 0, 46, 47, 48, 49, 50, 51,
-	0, 0, 0, 90, 91, 92, 93, 45, 52, 53,
-	54, 0, 44, 46, 47, 48, 49, 50, 51, 46,
-	47, 48, 49, 50, 51, 0, 45, 52, 53, 54,
-	0, 0, 0, 52, 53, 54, 46, 47, 48, 49,
-	50, 51, 0, 0, 59, 60, 57, 58, 0, 0,
-	0, 53, 54, 56, 102, 52, 53, 54, 55, 112,
-	102, 52, 53, 54, 0, 96, 102, 52, 53, 54,
-	0, 108, 42, 43, 42, 43, 0, 0, 0, 42,
-	43, 41, 0, 41, 0, 0, 0, 71, 41, 69,
-	12, 9, 0, 105, 10, 6, 8, 7, 42, 43,
-	0, 42, 43, 0, 42, 43, 0, 41, 0, 0,
-	41, 0, 94, 41, 11, 68, 9, 0, 40, 10,
-	6, 8, 7, 59, 60, 57, 58, 0, 0, 0,
-	0, 0, 56, 0, 0, 0, 0, 0, 0, 11,
+var yyAct = [...]uint8{
+	35, 118, 111, 54, 55, 56, 2, 132, 48, 49,
+	50, 51, 52, 53, 113, 21, 54, 55, 56, 19,
+	39, 47, 54, 55, 56, 65, 132, 48, 49, 50,
+	51, 52, 53, 55, 56, 20, 34, 37, 71, 40,
+	47, 54, 55, 56, 77, 63, 69, 67, 82, 83,
+	86, 87, 88, 89, 90, 91, 92, 93, 66, 36,
+	18, 17, 16, 15, 76, 79, 80, 14, 81, 61,
+	62, 59, 60, 68, 22, 41, 109, 38, 58, 94,
+	106, 107, 119, 131, 64, 112, 3, 102, 103, 1,
+	104, 70, 105, 44, 45, 28, 108, 61, 62, 59,
+	60, 4, 43, 78, 44, 45, 58, 0, 129, 44,
+	45, 122, 123, 43, 44, 45, 127, 0, 43, 95,
+	96, 97, 98, 43, 115, 0, 128, 44, 45, 75,
+	133, 0, 0, 0, 124, 110, 125, 48, 49, 50,
+	51, 52, 53, 48, 49, 50, 51, 52, 53, 5,
+	47, 54, 55, 56, 13, 121, 47, 54, 55, 56,
+	0, 101, 0, 48, 49, 50, 51, 52, 53, 25,
+	29, 32, 26, 0, 0, 126, 47, 54, 55, 56,
+	0, 46, 0, 0, 31, 23, 27, 33, 30, 61,
+	62, 59, 60, 24, 48, 49, 50, 51, 52, 53,
+	48, 49, 50, 51, 52, 53, 0, 0, 54, 55,
+	56, 61, 62, 59, 60, 55, 56, 0, 0, 0,
+	58, 61, 62, 59, 60, 100, 0, 0, 0, 0,
+	58, 61, 62, 59, 60, 74, 111, 54, 55, 56,
+	58, 101, 44, 45, 0, 57, 12, 9, 29, 0,
+	85, 43, 10, 6, 8, 7, 0, 73, 0, 44,
+	45, 44, 45, 0, 27, 33, 0, 0, 43, 0,
+	43, 84, 11, 130, 0, 120, 44, 45, 44, 45,
+	44, 45, 44, 45, 0, 43, 0, 43, 0, 43,
+	117, 43, 116, 0, 114, 0, 99, 44, 45, 44,
+	45, 61, 62, 59, 60, 0, 43, 0, 43, 9,
+	58, 72, 0, 42, 10, 6, 8, 7, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 11,
 }
 
 var yyPact = [...]int16{
-	72, -1000, -1000, 230, 205, -1000, 27, 26, 15, 14,
-	9, -6, -1000, -1000, 70, 70, 70, 70, 70, 44,
-	207, 101, 147, -1000, 70, 16, -1000, -4, -28, -1000,
-	70, -1000, 204, 120, 226, 177, 51, 41, 175, -1000,
-	-1000, 70, 70, 70, -1000, 70, 8, 8, 8, 8,
-	8, 8, 8, 8, 8, -1000, 70, 70, 70, 70,
-	70, 201, 10, -7, -1000, 70, 70, -1000, -1000, 72,
-	72, 8, 84, 126, 69, -1000, -1000, 84, 143, -15,
-	8, -15, -15, -15, -15, -15, -24, -1000, -1000, 84,
-	-1000, -1000, -1000, -1000, -1000, -1000, -1000, 80, 182, -30,
-	56, 160, 8, 154, 8, -1000, -1000, 72, -1000, -24,
-	148, -1000, -1000,
+	82, -1000, -1000, 303, 241, -1000, 35, 31, 30, 29,
+	28, -12, -1000, -1000, 161, 161, 161, 161, 161, 51,
+	280, 148, 212, -1000, 161, 26, 15, 47, -1000, 14,
+	-1000, 161, 6, -1000, 278, 12, 282, 223, 202, 85,
+	95, -1000, -1000, 161, 161, 161, -1000, 161, 239, 239,
+	239, 239, 239, 239, 239, 239, 239, -1000, 161, 161,
+	161, 161, 161, 263, 192, 128, 161, 161, -1000, 161,
+	-1000, 161, -1000, 82, 82, 161, 108, 179, 170, -1000,
+	-1000, 108, 185, -13, 239, -18, -13, -13, -13, -13,
+	-13, 3, -1000, -1000, 108, -1000, -1000, -1000, -1000, -1000,
+	-1000, -1000, 261, 90, 259, 257, -32, 75, 242, 122,
+	78, 239, 208, 161, -1000, 161, -1000, -1000, -1000, 82,
+	-1000, -1000, -1000, 3, 74, 240, 50, -7, -1000, 239,
+	-1000, -1000, -1000, -26,
 }
 
-var yyPgo = [...]int8{
-	0, 99, 3, 110, 18, 65, 0, 109, 108,
+var yyPgo = [...]uint8{
+	0, 149, 6, 101, 20, 59, 0, 95, 89,
 }
 
 var yyR1 = [...]int8{
 	0, 8, 2, 3, 3, 1, 1, 1, 1, 1,
-	1, 1, 1, 1, 4, 4, 4, 4, 4, 4,
-	4, 5, 5, 5, 5, 5, 5, 5, 5, 5,
-	5, 5, 5, 5, 5, 5, 6, 6, 6, 6,
-	6, 6, 6, 6, 6, 7, 7,
+	1, 1, 1, 1, 1, 1, 4, 4, 4, 4,
+	4, 4, 4, 4, 4, 5, 5, 5, 5, 5,
+	5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+	5, 5, 6, 6, 6, 6, 6, 6, 6, 6,
+	6, 7, 7,
 }
 
 var yyR2 = [...]int8{
 	0, 1, 3, 2, 1, 4, 4, 4, 4, 6,
-	5, 7, 6, 3, 1, 3, 3, 3, 3, 3,
-	3, 1, 3, 2, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 3, 3, 3, 1, 1, 3, 3,
-	3, 3, 3, 6, 4, 1, 2,
+	5, 7, 6, 6, 6, 3, 1, 3, 3, 3,
+	3, 3, 3, 4, 6, 1, 3, 2, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	4, 6, 1, 1, 3, 3, 3, 3, 3, 4,
+	6, 1, 2,
 }
 
 var yyChk = [...]int16{
-	-1000, -8, -2, 4, -3, -1, 10, 12, 11, 6,
-	9, 29, 5, -1, 30, 30, 30, 30, 30, 29,
-	-4, -6, -5, 22, 30, 23, -7, 9, 8, 25,
-	21, 24, -4, -6, -5, -4, -5, -4, -4, 22,
-	31, 26, 17, 18, 31, 26, 13, 14, 15, 16,
-	17, 18, 27, 28, 29, 31, 26, 19, 20, 17,
-	18, -4, -5, -6, 24, 30, 30, -5, 31, 32,
-	31, 32, -4, -6, -5, -4, -4, -4, -6, -6,
-	30, -6, -6, -6, -6, -6, -6, -6, -6, -4,
-	-5, -5, -5, -5, 31, 31, 31, -4, -4, -2,
-	-2, -6, 26, -6, 32, 31, 31, 7, 31, -6,
-	-6, -2, 31,
+	-1000, -8, -2, 4, -3, -1, 12, 14, 13, 6,
+	11, 31, 5, -1, 32, 32, 32, 32, 32, 31,
+	-4, -6, -5, 24, 32, 8, 11, 25, -7, 9,
+	27, 23, 10, 26, -4, -6, -5, -4, -5, -4,
+	-4, 24, 33, 28, 19, 20, 33, 28, 15, 16,
+	17, 18, 19, 20, 29, 30, 31, 33, 28, 21,
+	22, 19, 20, -4, -5, -6, 32, 32, 26, 32,
+	-5, 32, 33, 34, 33, 34, -4, -6, -5, -4,
+	-4, -4, -6, -6, 32, 11, -6, -6, -6, -6,
+	-6, -6, -6, -6, -4, -5, -5, -5, -5, 33,
+	33, 33, -4, -4, -4, -4, -2, -2, -4, -6,
+	-5, 28, -6, 32, 33, 34, 33, 33, 33, 7,
+	33, 33, 33, -6, -4, -4, -5, -6, -2, 34,
+	33, 33, 33, -6,
 }
 
 var yyDef = [...]int8{
 	0, -2, 1, 0, 0, 4, 0, 0, 0, 0,
 	0, 0, 2, 3, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 14, 0, 36, 37, 0, 0, 21,
-	0, 45, 0, 0, 0, 0, 0, 0, 0, 13,
-	5, 0, 0, 0, 6, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 7, 0, 0, 0, 0,
-	0, 0, 0, 0, 46, 0, 0, 23, 8, 0,
-	0, 0, 16, 17, 19, 34, 35, 18, 39, 28,
-	0, 29, 30, 31, 32, 33, 40, 41, 42, 20,
-	24, 25, 26, 27, 15, 22, 38, 0, 0, 0,
-	10, 0, 0, 0, 0, 44, 9, 0, 12, 39,
-	0, 11, 43,
+	0, 0, 0, 16, 0, 0, 0, 42, 43, 0,
+	25, 0, 0, 51, 0, 0, 0, 0, 0, 0,
+	0, 15, 5, 0, 0, 0, 6, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 7, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 52, 0,
+	27, 0, 8, 0, 0, 0, 18, 19, 21, 38,
+	39, 20, 45, 32, 0, 0, 33, 34, 35, 36,
+	37, 46, 47, 48, 22, 28, 29, 30, 31, 17,
+	26, 44, 0, 0, 0, 0, 0, 10, 0, 0,
+	0, 0, 0, 0, 23, 0, 49, 40, 9, 0,
+	12, 13, 14, 45, 0, 0, 0, 0, 11, 0,
+	24, 41, 50, 0,
 }
 
 var yyTok1 = [...]int8{
@@ -185,13 +205,13 @@ var yyTok1 = [...]int8{
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	30, 31, 28, 26, 32, 27, 3, 29,
+	32, 33, 30, 28, 34, 29, 3, 31,
 }
 
 var yyTok2 = [...]int8{
 	2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
 	12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-	22, 23, 24, 25,
+	22, 23, 24, 25, 26, 27,
 }
 
 var yyTok3 = [...]int8{
@@ -594,29 +614,29 @@ yydefault:
 			yyVAL.Statement = &fnStmt{fn: SET, expr: yyDollar[3].Expression, expr2: yyDollar[5].Expression}
 		}
 	case 13:
-		yyDollar = yyS[yypt-3 : yypt+1]
+		yyDollar = yyS[yypt-6 : yypt+1]
 		{
-			yyVAL.Statement = &commentStmt{comment: yyDollar[3].String}
+			yyVAL.Statement = &fnStmt{fn: SET, expr: yyDollar[3].Expression, expr2: yyDollar[5].Expression}
 		}
 	case 14:
-		yyDollar = yyS[yypt-1 : yypt+1]
+		yyDollar = yyS[yypt-6 : yypt+1]
 		{
-			yyVAL.Expression = yyDollar[1].String
+			yyVAL.Statement = &fnStmt{fn: SET, expr: yyDollar[3].Expression, expr2: yyDollar[5].Expression}
 		}
 	case 15:
 		yyDollar = yyS[yypt-3 : yypt+1]
 		{
-			yyVAL.Expression = &parenExpr{expr: yyDollar[2].Expression}
+			yyVAL.Statement = &commentStmt{comment: yyDollar[3].String}
 		}
 	case 16:
-		yyDollar = yyS[yypt-3 : yypt+1]
+		yyDollar = yyS[yypt-1 : yypt+1]
 		{
-			yyVAL.Expression = &mathExpr{op: '+', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+			yyVAL.Expression = yyDollar[1].String
 		}
 	case 17:
 		yyDollar = yyS[yypt-3 : yypt+1]
 		{
-			yyVAL.Expression = &mathExpr{op: '+', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+			yyVAL.Expression = &parenExpr{expr: yyDollar[2].Expression}
 		}
 	case 18:
 		yyDollar = yyS[yypt-3 : yypt+1]
@@ -634,131 +654,161 @@ yydefault:
 			yyVAL.Expression = &mathExpr{op: '+', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
 		}
 	case 21:
-		yyDollar = yyS[yypt-1 : yypt+1]
-		{
-			yyVAL.Expression = yyDollar[1].Boolean
-		}
-	case 22:
-		yyDollar = yyS[yypt-3 : yypt+1]
-		{
-			yyVAL.Expression = &parenExpr{expr: yyDollar[2].Expression}
-		}
-	case 23:
-		yyDollar = yyS[yypt-2 : yypt+1]
-		{
-			yyVAL.Expression = &notExpr{expr: yyDollar[2].Expression}
-		}
-	case 24:
-		yyDollar = yyS[yypt-3 : yypt+1]
-		{
-			yyVAL.Expression = &cmpExpr{op: CMP_AND, t: BOOLEAN, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
-		}
-	case 25:
-		yyDollar = yyS[yypt-3 : yypt+1]
-		{
-			yyVAL.Expression = &cmpExpr{op: CMP_OR, t: BOOLEAN, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
-		}
-	case 26:
-		yyDollar = yyS[yypt-3 : yypt+1]
-		{
-			yyVAL.Expression = &cmpExpr{op: CMP_EQ, t: BOOLEAN, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
-		}
-	case 27:
-		yyDollar = yyS[yypt-3 : yypt+1]
-		{
-			yyVAL.Expression = &cmpExpr{op: CMP_NEQ, t: BOOLEAN, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
-		}
-	case 28:
-		yyDollar = yyS[yypt-3 : yypt+1]
-		{
-			yyVAL.Expression = &cmpExpr{op: CMP_LT, t: NUMBER, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
-		}
-	case 29:
-		yyDollar = yyS[yypt-3 : yypt+1]
-		{
-			yyVAL.Expression = &cmpExpr{op: CMP_GT, t: NUMBER, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
-		}
-	case 30:
-		yyDollar = yyS[yypt-3 : yypt+1]
-		{
-			yyVAL.Expression = &cmpExpr{op: CMP_LTE, t: NUMBER, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
-		}
-	case 31:
-		yyDollar = yyS[yypt-3 : yypt+1]
-		{
-			yyVAL.Expression = &cmpExpr{op: CMP_GTE, t: NUMBER, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
-		}
-	case 32:
-		yyDollar = yyS[yypt-3 : yypt+1]
-		{
-			yyVAL.Expression = &cmpExpr{op: CMP_EQ, t: NUMBER, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
-		}
-	case 33:
-		yyDollar = yyS[yypt-3 : yypt+1]
-		{
-			yyVAL.Expression = &cmpExpr{op: CMP_NEQ, t: NUMBER, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
-		}
-	case 34:
-		yyDollar = yyS[yypt-3 : yypt+1]
-		{
-			yyVAL.Expression = &cmpExpr{op: CMP_EQ, t: STRING, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
-		}
-	case 35:
-		yyDollar = yyS[yypt-3 : yypt+1]
-		{
-			yyVAL.Expression = &cmpExpr{op: CMP_NEQ, t: STRING, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
-		}
-	case 36:
-		yyDollar = yyS[yypt-1 : yypt+1]
-		{
-			yyVAL.Expression = yyDollar[1].Number
-		}
-	case 37:
-		yyDollar = yyS[yypt-1 : yypt+1]
-		{
-			yyVAL.Expression = yyDollar[1].Expression
-		}
-	case 38:
-		yyDollar = yyS[yypt-3 : yypt+1]
-		{
-			yyVAL.Expression = &parenExpr{expr: yyDollar[2].Expression}
-		}
-	case 39:
 		yyDollar = yyS[yypt-3 : yypt+1]
 		{
 			yyVAL.Expression = &mathExpr{op: '+', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
 		}
-	case 40:
+	case 22:
 		yyDollar = yyS[yypt-3 : yypt+1]
 		{
-			yyVAL.Expression = &mathExpr{op: '-', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+			yyVAL.Expression = &mathExpr{op: '+', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
 		}
-	case 41:
-		yyDollar = yyS[yypt-3 : yypt+1]
-		{
-			yyVAL.Expression = &mathExpr{op: '*', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
-		}
-	case 42:
-		yyDollar = yyS[yypt-3 : yypt+1]
-		{
-			yyVAL.Expression = &mathExpr{op: '/', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
-		}
-	case 43:
-		yyDollar = yyS[yypt-6 : yypt+1]
-		{
-			yyVAL.Expression = &fnStmt{fn: SET, expr: yyDollar[3].Expression, expr2: yyDollar[5].Expression}
-		}
-	case 44:
+	case 23:
 		yyDollar = yyS[yypt-4 : yypt+1]
 		{
 			yyVAL.Expression = &fnStmt{fn: GET, expr: yyDollar[3].Expression}
 		}
+	case 24:
+		yyDollar = yyS[yypt-6 : yypt+1]
+		{
+			yyVAL.Expression = &fnStmt{fn: SET, expr: yyDollar[3].Expression, expr2: yyDollar[5].Expression}
+		}
+	case 25:
+		yyDollar = yyS[yypt-1 : yypt+1]
+		{
+			yyVAL.Expression = yyDollar[1].Boolean
+		}
+	case 26:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		{
+			yyVAL.Expression = &parenExpr{expr: yyDollar[2].Expression}
+		}
+	case 27:
+		yyDollar = yyS[yypt-2 : yypt+1]
+		{
+			yyVAL.Expression = &notExpr{expr: yyDollar[2].Expression}
+		}
+	case 28:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		{
+			yyVAL.Expression = &cmpExpr{op: CMP_AND, t: BOOLEAN, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+		}
+	case 29:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		{
+			yyVAL.Expression = &cmpExpr{op: CMP_OR, t: BOOLEAN, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+		}
+	case 30:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		{
+			yyVAL.Expression = &cmpExpr{op: CMP_EQ, t: BOOLEAN, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+		}
+	case 31:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		{
+			yyVAL.Expression = &cmpExpr{op: CMP_NEQ, t: BOOLEAN, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+		}
+	case 32:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		{
+			yyVAL.Expression = &cmpExpr{op: CMP_LT, t: NUMBER, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+		}
+	case 33:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		{
+			yyVAL.Expression = &cmpExpr{op: CMP_GT, t: NUMBER, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+		}
+	case 34:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		{
+			yyVAL.Expression = &cmpExpr{op: CMP_LTE, t: NUMBER, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+		}
+	case 35:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		{
+			yyVAL.Expression = &cmpExpr{op: CMP_GTE, t: NUMBER, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+		}
+	case 36:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		{
+			yyVAL.Expression = &cmpExpr{op: CMP_EQ, t: NUMBER, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+		}
+	case 37:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		{
+			yyVAL.Expression = &cmpExpr{op: CMP_NEQ, t: NUMBER, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+		}
+	case 38:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		{
+			yyVAL.Expression = &cmpExpr{op: CMP_EQ, t: STRING, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+		}
+	case 39:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		{
+			yyVAL.Expression = &cmpExpr{op: CMP_NEQ, t: STRING, left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+		}
+	case 40:
+		yyDollar = yyS[yypt-4 : yypt+1]
+		{
+			yyVAL.Expression = &fnStmt{fn: GETB, expr: yyDollar[3].Expression}
+		}
+	case 41:
+		yyDollar = yyS[yypt-6 : yypt+1]
+		{
+			yyVAL.Expression = &fnStmt{fn: SET, expr: yyDollar[3].Expression, expr2: yyDollar[5].Expression}
+		}
+	case 42:
+		yyDollar = yyS[yypt-1 : yypt+1]
+		{
+			yyVAL.Expression = yyDollar[1].Number
+		}
+	case 43:
+		yyDollar = yyS[yypt-1 : yypt+1]
+		{
+			yyVAL.Expression = yyDollar[1].Expression
+		}
+	case 44:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		{
+			yyVAL.Expression = &parenExpr{expr: yyDollar[2].Expression}
+		}
 	case 45:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		{
+			yyVAL.Expression = &mathExpr{op: '+', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+		}
+	case 46:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		{
+			yyVAL.Expression = &mathExpr{op: '-', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+		}
+	case 47:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		{
+			yyVAL.Expression = &mathExpr{op: '*', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+		}
+	case 48:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		{
+			yyVAL.Expression = &mathExpr{op: '/', left: yyDollar[1].Expression, right: yyDollar[3].Expression}
+		}
+	case 49:
+		yyDollar = yyS[yypt-4 : yypt+1]
+		{
+			yyVAL.Expression = &fnStmt{fn: GETN, expr: yyDollar[3].Expression}
+		}
+	case 50:
+		yyDollar = yyS[yypt-6 : yypt+1]
+		{
+			yyVAL.Expression = &fnStmt{fn: SET, expr: yyDollar[3].Expression, expr2: yyDollar[5].Expression}
+		}
+	case 51:
 		yyDollar = yyS[yypt-1 : yypt+1]
 		{
 			yyVAL.Expression = &rollExpr{num: 1, sides: yyDollar[1].Number}
 		}
-	case 46:
+	case 52:
 		yyDollar = yyS[yypt-2 : yypt+1]
 		{
 			yyVAL.Expression = &rollExpr{num: yyDollar[1].Number, sides: yyDollar[2].Number}

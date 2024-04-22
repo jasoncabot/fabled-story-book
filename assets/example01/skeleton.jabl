@@ -1,5 +1,5 @@
 {
-    if (get("examined-skeleton") == 1) {
+    if (getn("examined-skeleton") == 1) {
         print("You have already examined this skeleton")
     } else {
         set("examined-skeleton", 1)
